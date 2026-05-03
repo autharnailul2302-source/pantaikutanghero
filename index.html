@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pantai Kutang Hero – Prototipe</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+
+  :root {
+    --sky: #5bc8f5;
+    --sea: #1a8fc1;
+    --sand: #f2c87e;
+    --sand2: #e6b45a;
+    --green: #3db54a;
+    --dark: #1a1a2e;
+    --ui-bg: rgba(10,20,40,0.88);
+    --gold: #ffd700;
+    --red: #e84040;
+    --white: #f0f0f0;
+    --accent: #ff7b2f;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; image-rendering: pixelated; }
+
+  body {
+    background: #0a0a1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden;
+  }
+
+  #wrapper {
+    position: relative;
+    width: 800px;
+    max-width: 100vw;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display:none; flex-direction:column; align-items:center; justify-content:center; }
+  .screen.active { display:flex; }
+
+  /* ── TITLE SCREEN ── */
+  #titleScreen {
+    background: linear-gradient(180deg, #0d2137 0%, #1a4a6e 40%, #1a8fc1 70%, #f2c87e 100%);
+    width:800px; height:540px;
+    position:relative; overflow:hidden;
+    border: 4px solid #ffd700;
+  }
+  .title-waves {
+    position:absolute; bottom:80px; left:0; right:0; height:60px;
+    background: repeating-linear-gradient(90deg, #1a8fc1 0, #1a8fc1 16px, #2aa3d5 16px, #2aa3d5 32px);
+    animation: wave 1s steps(2) infinite;
+  }
+  @keyframes wave { 0%{transform:translateX(0)} 100%{transform:translateX(-32px)} }
+  .title-sand { position:absolute; bottom:0; left:0; right:0; height:80px; background:#f2c87e; }
+  .title-palm { position:absolute; bottom:80px; right:80px; font-size:48px; }
+  .title-sun {
+    position:absolute; top:30px; right:100px; width:60px; height:60px;
+    background:#ffd700; border-radius:50%;
+    box-shadow: 0 0 0 8px #ffd70044, 0 0 0 16px #ffd70022;
+  }
+
+  .title-content { position:relative; z-index:10; text-align:center; margin-top:-60px; }
+  .title-logo { font-size:13px; color:#ffd700; text-shadow:3px 3px #000, -1px -1px #000; line-height:2; }
+  .title-sub { font-size:7px; color:#fff; margin-top:8px; text-shadow:1px 1px #000; }
+  .btn-start {
+    margin-top:24px; padding:14px 28px;
+    background:#ff7b2f; border:3px solid #fff; border-bottom:5px solid #c45500;
+    color:#fff; font-family:'Press Start 2P'; font-size:8px;
+    cursor:pointer; letter-spacing:1px;
+    animation: blink 1s steps(1) infinite;
+    transition: transform .1s;
+  }
+  .btn-start:hover { transform:scale(1.05); }
+  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.4} }
+
+  /* ── GAME SCREEN ── */
+  #gameScreen {
+    position:relative; width:800px; height:540px;
+    overflow:hidden;
+  }
+
+  canvas { display:block; }
+
+  /* ── HUD ── */
+  #hud {
+    position:absolute; top:0; left:0; right:0;
+    background: var(--ui-bg);
+    display:flex; align-items:center; gap:12px;
+    padding:6px 12px; border-bottom:2px solid var(--gold);
+    z-index:20;
+  }
+  .hud-item { font-size:7px; color:var(--white); line-height:1.8; }
+  .hud-val { color:var(--gold); }
+  .hud-sep { color:#444; font-size:16px; }
+  #dayBar {
+    flex:1; height:10px; background:#333; border:1px solid #555;
+    position:relative; overflow:hidden;
+  }
+  #dayBarFill {
+    height:100%; background:linear-gradient(90deg,#ff7b2f,#ffd700);
+    transition: width .5s;
+  }
+  #dayLabel { font-size:6px; color:#aaa; }
+
+  /* ── SHOP PANEL ── */
+  #shopPanel {
+    position:absolute; bottom:0; left:0; right:0;
+    background:var(--ui-bg); border-top:2px solid var(--gold);
+    display:flex; align-items:center; gap:6px;
+    padding:6px 10px; z-index:20; flex-wrap:wrap;
+  }
+  .shop-label { font-size:6px; color:#aaa; }
+  .shop-btn {
+    padding:5px 7px; font-family:'Press Start 2P'; font-size:5px;
+    border:2px solid #555; background:#1a2a3a; color:#fff;
+    cursor:pointer; transition: all .1s; line-height:1.8;
+  }
+  .shop-btn:hover { border-color:var(--gold); background:#2a3a4a; }
+  .shop-btn.selected { border-color:var(--accent); background:#3a2a0a; }
+  .shop-btn .price { color:var(--gold); display:block; }
+
+  /* ── TOOLTIP ── */
+  #tooltip {
+    position:absolute; background:#000d; border:1px solid var(--gold);
+    padding:6px 10px; font-size:6px; color:#fff; pointer-events:none;
+    z-index:99; display:none; line-height:1.8; max-width:150px;
+  }
+
+  /* ── MESSAGE ── */
+  #msgBox {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:var(--ui-bg); border:3px solid var(--gold); padding:12px 18px;
+    font-size:7px; color:#fff; text-align:center; z-index:50;
+    display:none; line-height:2;
+  }
+  #msgBox.visible { display:block; }
+
+  /* ── O2O POPUP ── */
+  #o2oPopup {
+    position:absolute; inset:0; background:#0009;
+    display:none; align-items:center; justify-content:center; z-index:60;
+  }
+  #o2oPopup.visible { display:flex; }
+  .o2o-card {
+    background:#0d1b2a; border:4px solid var(--gold);
+    padding:24px 32px; text-align:center; max-width:360px;
+  }
+  .o2o-title { font-size:10px; color:var(--gold); margin-bottom:12px; }
+  .o2o-body { font-size:7px; color:#fff; line-height:2.2; margin-bottom:16px; }
+  .o2o-poin { font-size:14px; color:var(--gold); }
+  .btn-claim {
+    padding:10px 20px; background:#ff7b2f; border:3px solid #fff;
+    font-family:'Press Start 2P'; font-size:7px; color:#fff; cursor:pointer;
+    margin:8px 4px;
+  }
+  .btn-close-o2o {
+    padding:10px 20px; background:#333; border:3px solid #555;
+    font-family:'Press Start 2P'; font-size:7px; color:#aaa; cursor:pointer;
+    margin:8px 4px;
+  }
+
+  /* ── END SCREEN ── */
+  #endScreen {
+    background: linear-gradient(180deg, #0d2137, #1a3a2a);
+    width:800px; height:540px;
+    align-items:center; justify-content:center; flex-direction:column; gap:16px;
+  }
+  .end-title { font-size:14px; color:var(--gold); text-shadow:2px 2px #000; }
+  .end-stats { font-size:7px; color:#fff; line-height:2.5; text-align:center; }
+  .btn-restart {
+    padding:12px 24px; background:#ff7b2f; border:3px solid #fff;
+    font-family:'Press Start 2P'; font-size:8px; color:#fff; cursor:pointer;
+    margin-top:12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- TITLE SCREEN -->
+<div id="titleScreen" class="screen active">
+  <div class="title-sun"></div>
+  <div class="title-waves"></div>
+  <div class="title-sand"></div>
+  <div class="title-palm">🌴</div>
+  <div class="title-content">
+    <div class="title-logo">⚓ PANTAI KUTANG HERO ⚓<br>
+    <span style="font-size:8px;color:#fff">MISI: SELAMATKAN PANTAI KUTANG!</span></div>
+    <div class="title-sub">Time-Management Tycoon · O2O Reward System<br>SMK Negeri 1 Brondong – FIKSI 2026</div>
+    <button class="btn-start" onclick="startGame()">▶ MULAI BERMAIN</button>
+  </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="gameScreen" class="screen">
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-item">💰 Rp<span class="hud-val" id="hudMoney">0</span></div>
+    <div class="hud-sep">|</div>
+    <div class="hud-item">⭐ Poin:<span class="hud-val" id="hudPoin">0</span></div>
+    <div class="hud-sep">|</div>
+    <div class="hud-item">😊 Rep:<span class="hud-val" id="hudRep">80</span>%</div>
+    <div class="hud-sep">|</div>
+    <div class="hud-item" id="dayLabel">Hari 1/7</div>
+    <div id="dayBar"><div id="dayBarFill" style="width:100%"></div></div>
+    <div class="hud-item">⏰<span class="hud-val" id="hudTime">60</span>s</div>
+  </div>
+
+  <canvas id="gameCanvas" width="800" height="490" style="margin-top:40px;display:block;"></canvas>
+
+  <!-- SHOP -->
+  <div id="shopPanel">
+    <span class="shop-label">BANGUN:</span>
+    <button class="shop-btn" id="btn-payung" onclick="selectItem('payung')">☂️ Payung<span class="price">Rp500</span></button>
+    <button class="shop-btn" id="btn-warung" onclick="selectItem('warung')">🍜 Warung<span class="price">Rp1000</span></button>
+    <button class="shop-btn" id="btn-gazebo" onclick="selectItem('gazebo')">🏠 Gazebo<span class="price">Rp2000</span></button>
+    <button class="shop-btn" id="btn-toilet" onclick="selectItem('toilet')">🚿 Toilet<span class="price">Rp1500</span></button>
+    <button class="shop-btn" id="btn-perahu" onclick="selectItem('perahu')">🚤 Perahu<span class="price">Rp3000</span></button>
+    <span class="shop-label" style="margin-left:auto">|</span>
+    <button class="shop-btn" onclick="openO2O()" style="border-color:#ffd700">🎁 O2O Tukar</button>
+    <button class="shop-btn" onclick="bersihkan()" style="border-color:#3db54a">🗑️ Bersihkan</button>
+  </div>
+
+  <div id="tooltip"></div>
+  <div id="msgBox"></div>
+</div>
+
+<!-- O2O POPUP -->
+<div id="o2oPopup">
+  <div class="o2o-card">
+    <div class="o2o-title">🎁 BUMDES SHOP – O2O REWARD</div>
+    <div class="o2o-body">
+      Tukarkan Poin Pesona Kutang-mu<br>dengan hadiah NYATA di Pantai Kutang!<br><br>
+      Poin kamu: <span class="o2o-poin" id="o2oPoinVal">0</span> pts
+      <br><br>
+      <span style="color:#aaa;font-size:6px">● 50 pts → Keychain Perahu Pantai Kutang<br>
+      ● 100 pts → Kaos "I Saved Pantai Kutang"<br>
+      ● 200 pts → Voucher Diskon 50% Perahu Naga<br><br>
+      ⚠️ Hadiah hanya bisa diklaim langsung<br>di lokasi Pantai Kutang, Lamongan!</span>
+    </div>
+    <button class="btn-claim" onclick="claimReward()">🎉 KLAIM REWARD!</button>
+    <button class="btn-close-o2o" onclick="closeO2O()">Nanti Saja</button>
+  </div>
+</div>
+
+<!-- END SCREEN -->
+<div id="endScreen" class="screen">
+  <div class="end-title" id="endTitle">LEVEL SELESAI!</div>
+  <div class="end-stats" id="endStats"></div>
+  <button class="btn-restart" onclick="restartGame()">🔄 MAIN LAGI</button>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//  GAME STATE
+// ════════════════════════════════════════════
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+const W = 800, H = 490;
+const TILE = 32;
+
+// MAP layout: 0=water 1=sand 2=grass 3=path 4=road
+const MAP_ROWS = 13, MAP_COLS = 25;
+const MAP = [];
+for(let r=0;r<MAP_ROWS;r++){
+  MAP[r]=[];
+  for(let c=0;c<MAP_COLS;c++){
+    if(r<3) MAP[r][c]=0;       // water
+    else if(r<5) MAP[r][c]=1;  // wet sand
+    else if(r<10) MAP[r][c]=1; // dry sand (buildable)
+    else MAP[r][c]=2;          // grass
+  }
+}
+
+// Placed objects
+let objects = [];
+// Visitors
+let visitors = [];
+// Trash
+let trash = [];
+// Player
+let player = { x:400, y:280, dir:1, moving:false, anim:0 };
+// Keys
+const keys = {};
+
+// Game vars
+let money = 2000;
+let poinPesona = 0;
+let reputation = 80;
+let dayTimer = 60;
+let day = 1;
+const maxDays = 7;
+let running = false;
+let selectedItem = null;
+let visitorSpawnTimer = 3;
+let trashTimer = 8;
+let revenueTimer = 0;
+let notifQueue = [];
+let notifTimer = 0;
+let notifMsg = '';
+let gameOver = false;
+
+const ITEMS = {
+  payung: { label:'Payung', emoji:'☂', cost:500, revenue:50, capacity:2, color:'#e84040' },
+  warung: { label:'Warung Makan', emoji:'🏪', cost:1000, revenue:120, capacity:4, color:'#ff7b2f' },
+  gazebo: { label:'Gazebo', emoji:'⬛', cost:2000, revenue:200, capacity:6, color:'#8B4513' },
+  toilet: { label:'Toilet', emoji:'🚿', cost:1500, revenue:0,   capacity:0, color:'#4444ff', repBonus:5 },
+  perahu: { label:'Perahu Naga', emoji:'🚤', cost:3000, revenue:350, capacity:8, color:'#cc44ff' },
+};
+
+// ════════════════════════════════════════════
+//  DRAWING
+// ════════════════════════════════════════════
+
+function drawMap(){
+  const COLORS = {
+    0:'#1a8fc1', // water
+    1:'#f2c87e', // sand
+    2:'#3db54a', // grass
+  };
+  for(let r=0;r<MAP_ROWS;r++){
+    for(let c=0;c<MAP_COLS;c++){
+      ctx.fillStyle = COLORS[MAP[r][c]] || '#888';
+      ctx.fillRect(c*TILE, r*TILE, TILE, TILE);
+      // grid subtle
+      ctx.strokeStyle='rgba(0,0,0,0.07)';
+      ctx.lineWidth=1;
+      ctx.strokeRect(c*TILE, r*TILE, TILE, TILE);
+    }
+  }
+  // water shimmer
+  ctx.fillStyle='rgba(255,255,255,0.12)';
+  for(let c=0;c<MAP_COLS;c++){
+    let shimX = (c*TILE) + (Math.sin(Date.now()/800+c)*8);
+    ctx.fillRect(shimX, 16, 20, 4);
+    ctx.fillRect(shimX+10, 48, 14, 3);
+  }
+  // Beach line (wet sand edge)
+  ctx.fillStyle='rgba(30,130,200,0.18)';
+  ctx.fillRect(0, 4*TILE, W, 6);
+
+  // Palm trees decoration
+  drawPalm(60, 4*TILE+10);
+  drawPalm(700, 4*TILE+10);
+  drawPalm(380, 10*TILE);
+
+  // Fixed entrance sign
+  ctx.fillStyle='#8B4513';
+  ctx.fillRect(360, 9*TILE+8, 14, 30);
+  ctx.fillRect(430, 9*TILE+8, 14, 30);
+  ctx.fillStyle='#ffd700';
+  ctx.fillRect(350, 9*TILE, 110, 18);
+  ctx.fillStyle='#000';
+  ctx.font='7px "Press Start 2P"';
+  ctx.fillText('PANTAI KUTANG',355, 9*TILE+13);
+}
+
+function drawPalm(x, y){
+  // trunk
+  ctx.fillStyle='#8B6914';
+  for(let i=0;i<24;i++){
+    ctx.fillRect(x + Math.sin(i*0.3)*2, y-i*2, 6, 3);
+  }
+  // leaves
+  ctx.fillStyle='#2d8a2d';
+  ctx.font='24px serif';
+  ctx.fillText('🌴', x-10, y-38);
+}
+
+function drawObjects(){
+  objects.forEach(obj=>{
+    const it = ITEMS[obj.type];
+    // base shadow
+    ctx.fillStyle='rgba(0,0,0,0.2)';
+    ctx.fillRect(obj.x+4, obj.y+TILE-4, TILE-8, 8);
+
+    // structure
+    ctx.fillStyle = it.color;
+    if(obj.type==='payung'){
+      // pole
+      ctx.fillStyle='#aaa';
+      ctx.fillRect(obj.x+14, obj.y+10, 4, TILE-10);
+      // canopy
+      ctx.fillStyle=it.color;
+      ctx.beginPath();
+      ctx.moveTo(obj.x, obj.y+18);
+      ctx.lineTo(obj.x+TILE, obj.y+18);
+      ctx.lineTo(obj.x+TILE/2, obj.y);
+      ctx.fill();
+      // stripe
+      ctx.fillStyle='rgba(255,255,255,0.4)';
+      ctx.beginPath();
+      ctx.moveTo(obj.x+8, obj.y+18);
+      ctx.lineTo(obj.x+TILE/2, obj.y);
+      ctx.lineTo(obj.x+TILE/2+4, obj.y);
+      ctx.lineTo(obj.x+12, obj.y+18);
+      ctx.fill();
+    } else if(obj.type==='warung'){
+      ctx.fillRect(obj.x, obj.y+8, TILE, TILE-8);
+      ctx.fillStyle='#c45500';
+      ctx.fillRect(obj.x-4, obj.y, TILE+8, 14);
+      ctx.fillStyle='#fff8';
+      ctx.fillRect(obj.x+4, obj.y+14, 10, 10);
+      ctx.fillRect(obj.x+18, obj.y+14, 10, 10);
+      ctx.fillStyle='#fff';
+      ctx.font='6px serif';
+      ctx.fillText('🍜',obj.x+6,obj.y+38);
+    } else if(obj.type==='gazebo'){
+      ctx.fillRect(obj.x+4, obj.y+10, TILE-8, TILE-10);
+      ctx.fillStyle='#5a2d00';
+      ctx.beginPath();
+      ctx.moveTo(obj.x-4, obj.y+12);
+      ctx.lineTo(obj.x+TILE+4, obj.y+12);
+      ctx.lineTo(obj.x+TILE/2, obj.y);
+      ctx.fill();
+    } else if(obj.type==='toilet'){
+      ctx.fillRect(obj.x+4, obj.y+4, TILE-8, TILE-4);
+      ctx.fillStyle='#1a44aa';
+      ctx.fillRect(obj.x+4, obj.y, TILE-8, 10);
+      ctx.fillStyle='#fff';
+      ctx.font='7px serif'; ctx.fillText('🚿',obj.x+6,obj.y+26);
+    } else if(obj.type==='perahu'){
+      ctx.fillStyle='#cc44ff';
+      ctx.fillRect(obj.x, obj.y+18, TILE*2, 14);
+      ctx.fillStyle='#8800cc';
+      ctx.fillRect(obj.x+4, obj.y+6, TILE*2-8, 12);
+      ctx.fillStyle='#ffd700';
+      ctx.beginPath();
+      ctx.moveTo(obj.x+TILE, obj.y); ctx.lineTo(obj.x+TILE, obj.y+20);
+      ctx.strokeStyle='#ffd700'; ctx.lineWidth=2; ctx.stroke();
+      ctx.fillRect(obj.x+TILE, obj.y, 18, 12);
+    }
+
+    // label
+    ctx.fillStyle='rgba(0,0,0,0.65)';
+    ctx.fillRect(obj.x, obj.y+TILE+2, TILE+10, 10);
+    ctx.fillStyle='#fff';
+    ctx.font='5px "Press Start 2P"';
+    ctx.fillText(it.label.substring(0,9), obj.x+1, obj.y+TILE+10);
+  });
+}
+
+function drawTrash(){
+  trash.forEach(t=>{
+    ctx.font='16px serif';
+    ctx.fillText('🗑',t.x,t.y);
+  });
+}
+
+function drawVisitors(){
+  visitors.forEach((v,i)=>{
+    const bx = v.x, by = v.y;
+    // body
+    ctx.fillStyle = v.color;
+    ctx.fillRect(bx, by+4, 10, 14);
+    // head
+    ctx.fillStyle = '#ffcc99';
+    ctx.fillRect(bx+1, by, 8, 8);
+    // eyes
+    ctx.fillStyle='#333';
+    ctx.fillRect(bx+2,by+2,2,2);
+    ctx.fillRect(bx+6,by+2,2,2);
+    // happiness bubble
+    if(v.happy){
+      ctx.font='10px serif';
+      ctx.fillText('😊',bx-2,by-4);
+    }
+  });
+}
+
+function drawPlayer(){
+  const p = player;
+  const frame = Math.floor(p.anim/8)%2;
+  // shadow
+  ctx.fillStyle='rgba(0,0,0,0.25)';
+  ctx.fillRect(p.x-6, p.y+20, 16, 5);
+  // body
+  ctx.fillStyle='#1a8fc1'; // blue shirt
+  ctx.fillRect(p.x-4, p.y+8, 14, 14);
+  // head
+  ctx.fillStyle='#ffcc99';
+  ctx.fillRect(p.x-3, p.y, 12, 10);
+  // hair
+  ctx.fillStyle='#3a1a00';
+  ctx.fillRect(p.x-3, p.y, 12, 4);
+  // eyes
+  ctx.fillStyle='#333';
+  ctx.fillRect(p.x+(p.dir>0?3:-5)+4, p.y+4, 2, 2);
+  // legs (animated)
+  ctx.fillStyle='#2266aa';
+  ctx.fillRect(p.x-4, p.y+22, 5, frame?8:6);
+  ctx.fillRect(p.x+5, p.y+22, 5, frame?6:8);
+  // hat
+  ctx.fillStyle='#ffd700';
+  ctx.fillRect(p.x-4, p.y-4, 14, 4);
+  ctx.fillRect(p.x-1, p.y-8, 8, 5);
+  // badge
+  ctx.fillStyle='#fff';
+  ctx.font='5px "Press Start 2P"';
+  ctx.fillText('MGR',p.x-4,p.y+6);
+}
+
+function drawPreviewItem(mx, my){
+  if(!selectedItem) return;
+  const gx = Math.floor(mx/TILE)*TILE;
+  const gy = Math.floor(my/TILE)*TILE;
+  ctx.globalAlpha=0.5;
+  ctx.fillStyle = ITEMS[selectedItem]?.color || '#fff';
+  ctx.fillRect(gx, gy, TILE, TILE);
+  ctx.globalAlpha=1;
+  ctx.strokeStyle='#ffd700';
+  ctx.lineWidth=2;
+  ctx.strokeRect(gx, gy, TILE, TILE);
+}
+
+function drawNotif(){
+  if(!notifMsg) return;
+  ctx.globalAlpha = Math.min(1, notifTimer/0.5);
+  ctx.fillStyle='rgba(0,20,40,0.85)';
+  ctx.fillRect(W/2-110, 60, 220, 28);
+  ctx.fillStyle='#ffd700';
+  ctx.font='7px "Press Start 2P"';
+  ctx.textAlign='center';
+  ctx.fillText(notifMsg, W/2, 79);
+  ctx.textAlign='left';
+  ctx.globalAlpha=1;
+}
+
+function drawSkyBG(){
+  const grad = ctx.createLinearGradient(0,0,0,3*TILE);
+  grad.addColorStop(0,'#0d2137');
+  grad.addColorStop(1,'#1a8fc1');
+  // sky is behind water tiles shown already — just color water tiles
+}
+
+// ════════════════════════════════════════════
+//  GAME LOGIC
+// ════════════════════════════════════════════
+function selectItem(type){
+  selectedItem = (selectedItem===type) ? null : type;
+  document.querySelectorAll('.shop-btn').forEach(b=>b.classList.remove('selected'));
+  if(selectedItem) document.getElementById('btn-'+type)?.classList.add('selected');
+}
+
+function placeObject(mx, my){
+  if(!selectedItem) return;
+  const it = ITEMS[selectedItem];
+  if(money < it.cost){ showNotif('💸 Uang tidak cukup!'); return; }
+  const gx = Math.floor(mx/TILE)*TILE;
+  const gy = Math.floor(my/TILE)*TILE;
+  const row = Math.floor(gy/TILE);
+  if(row < 5){ showNotif('❌ Hanya bisa di pasir!'); return; }
+  // check overlap
+  const overlap = objects.some(o=> Math.abs(o.x-gx)<TILE && Math.abs(o.y-gy)<TILE);
+  if(overlap){ showNotif('❌ Tempat sudah terisi!'); return; }
+  objects.push({type:selectedItem, x:gx, y:gy});
+  money -= it.cost;
+  if(it.repBonus) reputation = Math.min(100, reputation + it.repBonus);
+  showNotif(`✅ ${it.label} dipasang! -Rp${it.cost}`);
+  updateHUD();
+}
+
+function bersihkan(){
+  if(trash.length === 0){ showNotif('✨ Pantai sudah bersih!'); return; }
+  const before = trash.length;
+  trash = [];
+  reputation = Math.min(100, reputation + before*2);
+  poinPesona += before*3;
+  showNotif(`🗑️ Sampah dibersihkan! +${before*3} poin`);
+  updateHUD();
+}
+
+function spawnVisitor(){
+  if(visitors.length >= 30) return;
+  const colors = ['#e84040','#ff7b2f','#ffd700','#3db54a','#1a8fc1','#cc44ff','#fff'];
+  visitors.push({
+    x: Math.random()*600+100,
+    y: (5+Math.random()*4)*TILE,
+    vx: (Math.random()-0.5)*0.6,
+    vy: (Math.random()-0.5)*0.4,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    happy: false,
+    timer: Math.random()*8+4,
+  });
+}
+
+function spawnTrash(){
+  if(trash.length >= 8) return;
+  trash.push({
+    x: Math.random()*600+80,
+    y: (5+Math.random()*4)*TILE + Math.random()*20,
+  });
+  if(trash.length >= 3) reputation = Math.max(0, reputation - 1);
+}
+
+function updateVisitors(dt){
+  visitors.forEach(v=>{
+    v.x += v.vx;
+    v.y += v.vy;
+    if(v.x<60||v.x>W-60) v.vx*=-1;
+    if(v.y<5*TILE||v.y>9*TILE) v.vy*=-1;
+    v.timer -= dt;
+    // check near object → happy + earn
+    objects.forEach(o=>{
+      if(Math.abs(v.x-o.x)<40 && Math.abs(v.y-o.y)<40){
+        v.happy = true;
+      }
+    });
+    if(v.timer<=0){
+      v.happy=false;
+    }
+  });
+  // remove expired
+  visitors = visitors.filter(v=>v.timer>-2);
+}
+
+function revenueCalc(){
+  let rev = 0;
+  objects.forEach(o=>{
+    const it = ITEMS[o.type];
+    const nearVisitors = visitors.filter(v=> Math.abs(v.x-o.x)<60 && Math.abs(v.y-o.y)<60).length;
+    rev += it.revenue * Math.min(nearVisitors, it.capacity||1) * 0.1;
+  });
+  // rep bonus
+  rev *= (reputation / 80);
+  return Math.round(rev);
+}
+
+function movePlayer(dt){
+  let speed = 120*dt;
+  let moved = false;
+  if(keys['ArrowLeft']||keys['a']){ player.x-=speed; player.dir=-1; moved=true; }
+  if(keys['ArrowRight']||keys['d']){ player.x+=speed; player.dir=1; moved=true; }
+  if(keys['ArrowUp']||keys['w']){ player.y-=speed; moved=true; }
+  if(keys['ArrowDown']||keys['s']){ player.y+=speed; moved=true; }
+  player.x = Math.max(10, Math.min(W-20, player.x));
+  player.y = Math.max(5*TILE, Math.min(9*TILE+10, player.y));
+  player.moving = moved;
+  if(moved) player.anim++;
+  else player.anim = 0;
+}
+
+function showNotif(msg){
+  notifMsg = msg;
+  notifTimer = 2;
+}
+
+function updateHUD(){
+  document.getElementById('hudMoney').textContent = money.toLocaleString('id');
+  document.getElementById('hudPoin').textContent = poinPesona;
+  document.getElementById('hudRep').textContent = reputation;
+  document.getElementById('dayLabel').textContent = `Hari ${day}/${maxDays}`;
+}
+
+let mouseX=0, mouseY=0;
+canvas.addEventListener('mousemove',e=>{
+  const r=canvas.getBoundingClientRect();
+  mouseX=e.clientX-r.left;
+  mouseY=e.clientY-r.top;
+});
+canvas.addEventListener('click',e=>{
+  const r=canvas.getBoundingClientRect();
+  placeObject(e.clientX-r.left, e.clientY-r.top);
+});
+document.addEventListener('keydown',e=>{ keys[e.key]=true; });
+document.addEventListener('keyup',e=>{ keys[e.key]=false; });
+
+// ════════════════════════════════════════════
+//  MAIN LOOP
+// ════════════════════════════════════════════
+let lastTime = 0;
+function gameLoop(ts){
+  if(!running) return;
+  const dt = Math.min((ts - lastTime)/1000, 0.1);
+  lastTime = ts;
+
+  // Timer
+  dayTimer -= dt;
+  if(dayTimer <= 0){
+    dayTimer = 0;
+    endDay();
+    return;
+  }
+
+  // Update dayBar
+  document.getElementById('dayBarFill').style.width = (dayTimer/60*100)+'%';
+  document.getElementById('hudTime').textContent = Math.ceil(dayTimer);
+
+  // Spawn visitors
+  visitorSpawnTimer -= dt;
+  if(visitorSpawnTimer<=0){
+    spawnVisitor();
+    visitorSpawnTimer = Math.max(1, 3 - objects.length*0.2);
+  }
+
+  // Spawn trash
+  trashTimer -= dt;
+  if(trashTimer<=0){
+    spawnTrash();
+    trashTimer = 6;
+  }
+
+  // Revenue every second
+  revenueTimer -= dt;
+  if(revenueTimer<=0){
+    const rev = revenueCalc();
+    if(rev>0){
+      money += rev;
+      poinPesona += Math.floor(rev/50);
+    }
+    revenueTimer = 1;
+    updateHUD();
+  }
+
+  // Notif timer
+  if(notifTimer>0){ notifTimer-=dt; if(notifTimer<=0) notifMsg=''; }
+
+  updateVisitors(dt);
+  movePlayer(dt);
+
+  // Draw
+  ctx.clearRect(0,0,W,H);
+  drawMap();
+  drawObjects();
+  drawTrash();
+  drawVisitors();
+  drawPlayer();
+  drawPreviewItem(mouseX, mouseY);
+  drawNotif();
+
+  requestAnimationFrame(gameLoop);
+}
+
+function endDay(){
+  running = false;
+  if(day >= maxDays){
+    showEndScreen();
+    return;
+  }
+  // Day summary popup
+  const msgBox = document.getElementById('msgBox');
+  msgBox.innerHTML = `
+    <div style="color:#ffd700;margin-bottom:8px">⭐ HARI ${day} SELESAI!</div>
+    <div>💰 Uang: Rp${money.toLocaleString('id')}</div>
+    <div>⭐ Poin Pesona: ${poinPesona}</div>
+    <div>😊 Reputasi: ${reputation}%</div>
+    <div style="margin-top:12px"><button class="btn-start" style="animation:none;font-size:7px;padding:8px 16px" onclick="nextDay()">▶ HARI BERIKUTNYA</button></div>
+  `;
+  msgBox.classList.add('visible');
+}
+
+function nextDay(){
+  document.getElementById('msgBox').classList.remove('visible');
+  day++;
+  dayTimer = 60;
+  visitors = [];
+  visitorSpawnTimer = 2;
+  running = true;
+  updateHUD();
+  lastTime = performance.now();
+  requestAnimationFrame(gameLoop);
+}
+
+function showEndScreen(){
+  document.getElementById('gameScreen').classList.remove('active');
+  const es = document.getElementById('endScreen');
+  es.classList.add('active');
+  const win = money >= 5000;
+  document.getElementById('endTitle').textContent = win ? '🏆 PANTAI TERSELAMATKAN!' : '😢 PANTAI DITUTUP...';
+  document.getElementById('endTitle').style.color = win ? '#ffd700' : '#e84040';
+  document.getElementById('endStats').innerHTML = `
+    Uang Akhir: Rp${money.toLocaleString('id')}<br>
+    Poin Pesona Kutang: ${poinPesona} pts<br>
+    Reputasi Pantai: ${reputation}%<br>
+    Fasilitas Dibangun: ${objects.length} unit<br>
+    Pengunjung Dilayani: ${Math.floor(visitors.length + day*5)}<br>
+    <br>
+    <span style="color:#ffd700">${win ? '✅ Kamu membuktikan Pantai Kutang menguntungkan!' : '❌ Coba lagi — Pantai Kutang butuhmu!'}</span>
+    <br><br>
+    <span style="color:#aaa;font-size:5px">Tukarkan ${poinPesona} Poin Pesona Kutang-mu<br>di BUMDes Pantai Kutang, Lamongan secara langsung!</span>
+  `;
+}
+
+function openO2O(){
+  document.getElementById('o2oPoinVal').textContent = poinPesona;
+  document.getElementById('o2oPopup').classList.add('visible');
+}
+function closeO2O(){
+  document.getElementById('o2oPopup').classList.remove('visible');
+}
+function claimReward(){
+  if(poinPesona < 50){
+    showNotif('⚠️ Poin belum cukup! (min 50)');
+    closeO2O();
+    return;
+  }
+  showNotif('🎁 Klaim di Pantai Kutang Lamongan!');
+  closeO2O();
+}
+
+function startGame(){
+  document.getElementById('titleScreen').classList.remove('active');
+  document.getElementById('gameScreen').classList.add('active');
+  running = true;
+  money = 2000;
+  poinPesona = 0;
+  reputation = 80;
+  dayTimer = 60;
+  day = 1;
+  objects = [];
+  visitors = [];
+  trash = [];
+  updateHUD();
+  lastTime = performance.now();
+  requestAnimationFrame(gameLoop);
+}
+
+function restartGame(){
+  document.getElementById('endScreen').classList.remove('active');
+  document.getElementById('titleScreen').classList.add('active');
+}
+</script>
+</body>
+</html>
