@@ -46,38 +46,403 @@
 
   /* ── TITLE SCREEN ── */
   #titleScreen {
-    background: linear-gradient(180deg, #0d2137 0%, #1a4a6e 40%, #1a8fc1 70%, #f2c87e 100%);
     width:800px; height:540px;
     position:relative; overflow:hidden;
-    border: 4px solid #ffd700;
-  }
-  .title-waves {
-    position:absolute; bottom:80px; left:0; right:0; height:60px;
-    background: repeating-linear-gradient(90deg, #1a8fc1 0, #1a8fc1 16px, #2aa3d5 16px, #2aa3d5 32px);
-    animation: wave 1s steps(2) infinite;
-  }
-  @keyframes wave { 0%{transform:translateX(0)} 100%{transform:translateX(-32px)} }
-  .title-sand { position:absolute; bottom:0; left:0; right:0; height:80px; background:#f2c87e; }
-  .title-palm { position:absolute; bottom:80px; right:80px; font-size:48px; }
-  .title-sun {
-    position:absolute; top:30px; right:100px; width:60px; height:60px;
-    background:#ffd700; border-radius:50%;
-    box-shadow: 0 0 0 8px #ffd70044, 0 0 0 16px #ffd70022;
+    background: linear-gradient(180deg,
+      #1a0a00 0%,
+      #7a2800 8%,
+      #d45500 20%,
+      #ff8c00 32%,
+      #ffb347 44%,
+      #ffd580 52%,
+      #ffe4a0 58%,
+      #7ec8d8 62%,
+      #5aa8c8 70%,
+      #d4a96a 78%,
+      #e8c07a 85%,
+      #f0c870 92%,
+      #e8b84a 100%
+    );
+    image-rendering: pixelated;
   }
 
-  .title-content { position:relative; z-index:10; text-align:center; margin-top:-60px; }
-  .title-logo { font-size:13px; color:#ffd700; text-shadow:3px 3px #000, -1px -1px #000; line-height:2; }
-  .title-sub { font-size:7px; color:#fff; margin-top:8px; text-shadow:1px 1px #000; }
-  .btn-start {
-    margin-top:24px; padding:14px 28px;
-    background:#ff7b2f; border:3px solid #fff; border-bottom:5px solid #c45500;
-    color:#fff; font-family:'Press Start 2P'; font-size:8px;
-    cursor:pointer; letter-spacing:1px;
-    animation: blink 1s steps(1) infinite;
-    transition: transform .1s;
+  /* Sky stars */
+  .ts-stars {
+    position:absolute; top:0; left:0; right:0; height:50%;
+    background-image:
+      radial-gradient(1px 1px at 12% 15%, #fff8 0%, transparent 100%),
+      radial-gradient(1px 1px at 28% 8%,  #fff6 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 20%, #fff8 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 12%, #fff6 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 25%, #fff8 0%, transparent 100%);
+    pointer-events:none;
   }
-  .btn-start:hover { transform:scale(1.05); }
-  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.4} }
+
+  /* Sun */
+  .ts-sun {
+    position:absolute;
+    top: 48px; left: 50%;
+    transform: translateX(-50%);
+    width:72px; height:72px;
+    background: radial-gradient(circle, #fff9d0 0%, #ffe066 40%, #ffaa00 70%, transparent 100%);
+    border-radius:50%;
+    box-shadow: 0 0 0 12px #ffaa0033, 0 0 0 28px #ffaa0018, 0 0 60px #ff880066;
+    animation: sunPulse 3s ease-in-out infinite;
+  }
+  @keyframes sunPulse {
+    0%,100%{box-shadow:0 0 0 12px #ffaa0033,0 0 0 28px #ffaa0018,0 0 60px #ff880066}
+    50%{box-shadow:0 0 0 18px #ffaa0044,0 0 0 36px #ffaa0022,0 0 80px #ff880088}
+  }
+
+  /* Sun reflection on water */
+  .ts-reflection {
+    position:absolute;
+    top:310px; left:50%;
+    transform:translateX(-50%);
+    width:40px; height:80px;
+    background: linear-gradient(180deg, #fff9a088 0%, transparent 100%);
+    filter: blur(6px);
+    border-radius:50%;
+  }
+
+  /* Ocean */
+  .ts-ocean {
+    position:absolute;
+    bottom:120px; left:0; right:0; height:180px;
+    background: linear-gradient(180deg, #3a9fc8 0%, #2280a8 40%, #1a6a8a 100%);
+    overflow:hidden;
+  }
+  .ts-wave1, .ts-wave2 {
+    position:absolute; height:10px; left:-100px; right:-100px;
+    background: repeating-linear-gradient(90deg,
+      transparent 0, transparent 20px,
+      rgba(255,255,255,0.25) 20px, rgba(255,255,255,0.25) 40px
+    );
+    animation: waveMove 2s steps(4) infinite;
+  }
+  .ts-wave1 { top:20px; }
+  .ts-wave2 { top:50px; animation-duration:3s; opacity:0.6; }
+  @keyframes waveMove { 0%{transform:translateX(0)} 100%{transform:translateX(40px)} }
+
+  /* Island in background */
+  .ts-island {
+    position:absolute;
+    bottom:80px; left:80px;
+    width:90px; height:40px;
+    background: #3a7a2a;
+    border-radius:50% 50% 10% 10%;
+    box-shadow: 0 8px 0 #2a6020;
+  }
+  .ts-island::before {
+    content:'🌴';
+    position:absolute; top:-28px; left:24px; font-size:22px;
+  }
+
+  /* Sand */
+  .ts-sand {
+    position:absolute;
+    bottom:0; left:0; right:0; height:130px;
+    background: linear-gradient(180deg, #e8b84a 0%, #d4a030 40%, #c89020 100%);
+    border-top: 4px solid #f0c870;
+  }
+
+  /* Pixel sand texture */
+  .ts-sand::before {
+    content:'';
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(2px 2px at 10% 30%, #c8902050 0%, transparent 100%),
+      radial-gradient(2px 2px at 30% 60%, #c8902050 0%, transparent 100%),
+      radial-gradient(2px 2px at 60% 20%, #c8902050 0%, transparent 100%),
+      radial-gradient(2px 2px at 80% 70%, #c8902050 0%, transparent 100%);
+  }
+
+  /* Palm trees */
+  .ts-palm-l {
+    position:absolute; bottom:118px; left:20px; font-size:64px;
+    filter: drop-shadow(4px 0 0 #0004);
+    animation: palmSway 4s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  .ts-palm-r {
+    position:absolute; bottom:118px; right:20px; font-size:56px;
+    filter: drop-shadow(-4px 0 0 #0004);
+    animation: palmSway 5s ease-in-out infinite reverse;
+    transform-origin: bottom center;
+  }
+  @keyframes palmSway {
+    0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)}
+  }
+
+  /* Pixel characters on sand */
+  .ts-char-mgr {
+    position:absolute; bottom:122px; right:140px;
+    font-size:36px;
+    filter: drop-shadow(2px 0 0 #0003);
+    animation: charBob 2s ease-in-out infinite;
+  }
+  .ts-char-visitor {
+    position:absolute; bottom:122px; left:160px;
+    font-size:28px;
+    animation: charBob 2.5s ease-in-out infinite reverse;
+  }
+  .ts-char-sheep {
+    position:absolute; bottom:122px; right:200px;
+    font-size:22px;
+    animation: charBob 3s ease-in-out infinite;
+  }
+  @keyframes charBob {
+    0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)}
+  }
+
+  /* Warung on right */
+  .ts-warung {
+    position:absolute; bottom:118px; right:30px;
+    background:#8B4513;
+    width:90px; height:70px;
+    border:3px solid #5a2d00;
+  }
+  .ts-warung::before {
+    content:'WARUNG';
+    position:absolute; top:-22px; left:-4px; right:-4px;
+    background:#5a2d00; border:2px solid #3a1a00;
+    color:#ffd700; font-size:5px; text-align:center;
+    padding:4px 2px; font-family:'Press Start 2P',monospace;
+  }
+  .ts-warung::after {
+    content:'🍜 🥤';
+    position:absolute; top:8px; left:0; right:0;
+    text-align:center; font-size:16px;
+  }
+  .ts-warung-roof {
+    position:absolute; bottom:185px; right:22px;
+    width:106px; height:48px;
+    background: #c8a020;
+    clip-path: polygon(0 100%, 50% 0%, 100% 100%);
+  }
+
+  /* Beach umbrella on left */
+  .ts-umbrella {
+    position:absolute; bottom:118px; left:120px;
+    font-size:48px;
+    filter: drop-shadow(2px 0 0 #0003);
+  }
+
+  /* Shell decorations */
+  .ts-shell1, .ts-shell2 {
+    position:absolute; bottom:128px; font-size:12px;
+  }
+  .ts-shell1 { left:260px; }
+  .ts-shell2 { right:260px; }
+
+  /* ── SIGN BOARD (center piece) ── */
+  .ts-sign-wrap {
+    position:absolute;
+    top: 30px; left:50%;
+    transform: translateX(-50%);
+    z-index:20;
+  }
+  .ts-sign-post-l, .ts-sign-post-r {
+    position:absolute;
+    bottom:-40px; width:14px; height:50px;
+    background: linear-gradient(90deg, #5a2d00, #8B4513, #5a2d00);
+    border:2px solid #3a1a00;
+  }
+  .ts-sign-post-l { left:14px; }
+  .ts-sign-post-r { right:14px; }
+  .ts-sign {
+    position:relative;
+    background: linear-gradient(180deg, #8B5a20 0%, #6b3e10 40%, #7a4a18 100%);
+    border: 4px solid #3a1a00;
+    border-radius: 6px;
+    padding: 14px 24px 18px;
+    box-shadow: 4px 4px 0 #1a0a00, inset 0 2px 0 #aa7030, inset 0 -2px 0 #3a1a00;
+    min-width: 280px;
+    text-align:center;
+  }
+  /* Wood grain lines */
+  .ts-sign::before {
+    content:'';
+    position:absolute; inset:8px;
+    background-image: repeating-linear-gradient(
+      180deg, transparent 0, transparent 6px,
+      rgba(0,0,0,0.08) 6px, rgba(0,0,0,0.08) 7px
+    );
+    pointer-events:none;
+  }
+  /* Bolt decorations */
+  .ts-sign::after {
+    content:'⬤ ⬤ ⬤ ⬤';
+    position:absolute; top:6px; left:0; right:0;
+    text-align:center; font-size:5px;
+    color:#3a1a0088; letter-spacing:60px;
+    pointer-events:none;
+  }
+  .ts-logo-pantai {
+    font-family:'Press Start 2P',monospace;
+    font-size:12px;
+    color:#ff4400;
+    text-shadow: 2px 2px 0 #7a0000, -1px -1px 0 #ff8800, 0 0 10px #ff440066;
+    line-height:1.3;
+  }
+  .ts-logo-kutang {
+    font-family:'Press Start 2P',monospace;
+    font-size:16px;
+    color:#ffd700;
+    text-shadow: 2px 2px 0 #7a4400, -1px -1px 0 #fff0a0, 3px 3px 0 #3a1a00;
+    line-height:1.3;
+    display:block;
+  }
+  .ts-logo-hero {
+    font-family:'Press Start 2P',monospace;
+    font-size:18px;
+    color:#ff6600;
+    text-shadow: 2px 2px 0 #7a2200, -1px -1px 0 #ffcc66, 3px 3px 0 #3a0a00;
+    line-height:1.3;
+    display:block;
+  }
+  .ts-logo-flag {
+    font-size:14px; margin:0 4px;
+    vertical-align: middle;
+  }
+  .ts-sub-sign {
+    font-family:'Press Start 2P',monospace;
+    font-size:5.5px;
+    color:#ffe0a0;
+    text-shadow:1px 1px #3a1a00;
+    margin-top:8px;
+    display:block;
+    letter-spacing:0.5px;
+  }
+
+  /* ── MENU BUTTONS ── */
+  .ts-menu {
+    position:absolute;
+    top:298px; left:50%;
+    transform:translateX(-50%);
+    display:flex; flex-direction:column; gap:8px;
+    z-index:20; align-items:center;
+  }
+  .ts-btn {
+    font-family:'Press Start 2P',monospace;
+    font-size:8px;
+    color:#fff8d0;
+    background: linear-gradient(180deg, #5a3010 0%, #3a1a00 100%);
+    border: 3px solid #8B5a20;
+    border-bottom: 5px solid #1a0a00;
+    border-right: 4px solid #1a0a00;
+    padding: 10px 28px;
+    cursor:pointer;
+    letter-spacing:1px;
+    min-width:220px;
+    text-align:left;
+    transition: all .08s;
+    text-shadow:1px 1px #1a0a00;
+    box-shadow: 2px 2px 0 #1a0a00;
+  }
+  .ts-btn:hover {
+    background: linear-gradient(180deg, #7a4a20 0%, #5a2a00 100%);
+    border-color:#ffd700;
+    color:#ffd700;
+    transform: translateX(2px) translateY(-1px);
+  }
+  .ts-btn:active {
+    transform:translateX(0) translateY(2px);
+    border-bottom-width:2px;
+  }
+  .ts-btn-main {
+    background: linear-gradient(180deg, #cc4400 0%, #882200 100%);
+    border-color:#ff7744;
+    color:#fff;
+    animation: btnGlow 1.5s ease-in-out infinite;
+  }
+  .ts-btn-main:hover {
+    background: linear-gradient(180deg, #ff5500 0%, #aa2200 100%);
+  }
+  @keyframes btnGlow {
+    0%,100%{box-shadow:2px 2px 0 #1a0a00, 0 0 0 #ff440000}
+    50%{box-shadow:2px 2px 0 #1a0a00, 0 0 12px #ff440066}
+  }
+
+  /* ── FOOTER ── */
+  .ts-footer {
+    position:absolute; bottom:6px; left:0; right:0;
+    text-align:center;
+    font-family:'Press Start 2P',monospace;
+    font-size:5px; color:#7a4a1088;
+    text-shadow:1px 1px #fff4;
+  }
+
+  /* ── OPENING STORY SCREEN ── */
+  #storyScreen {
+    width:800px; height:540px;
+    position:relative; overflow:hidden;
+    background:#000;
+    flex-direction:column;
+  }
+  #storyCinema { position:absolute; inset:0; display:flex; flex-direction:column; }
+  .cinema-bar { flex-shrink:0; height:60px; background:#000; z-index:10; }
+  #storyScene { flex:1; position:relative; overflow:hidden; }
+  .scene-bg { position:absolute; inset:0; transition:opacity 0.8s ease; opacity:0; }
+  .scene-bg.active { opacity:1; }
+  .sbg-meeting { background:linear-gradient(180deg,#0a0a18 0%,#12122a 50%,#1a1220 100%); }
+  .sbg-pantai { background:linear-gradient(180deg,#0d3d5a 0%,#1a6a8a 30%,#2a9aba 55%,#e8b84a 70%,#d4a030 100%); }
+  .sbg-factory { background:linear-gradient(180deg,#0a0808 0%,#1a1010 50%,#2a1808 100%); }
+  .sbg-challenge { background:linear-gradient(180deg,#0a1a10 0%,#1a3a20 50%,#0a2a18 100%); }
+
+  /* dialog box */
+  #storyDialog {
+    position:absolute; bottom:68px; left:20px; right:20px;
+    background:rgba(4,8,18,0.96); border:3px solid #ffd700; border-radius:3px;
+    padding:14px 18px 14px 104px; min-height:92px; z-index:20;
+    box-shadow:0 0 0 1px #0008,inset 0 1px 0 #ffd70022;
+  }
+  #storyPortrait {
+    position:absolute; bottom:74px; left:18px;
+    width:82px; height:86px;
+    background:rgba(4,8,18,0.96); border:3px solid #ffd700; border-radius:3px;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    z-index:21; overflow:hidden;
+  }
+  .portrait-emoji { font-size:34px; line-height:1; }
+  .portrait-name { font-family:'Press Start 2P',monospace; font-size:4.5px; color:#ffd700; text-align:center; margin-top:5px; line-height:1.5; padding:0 3px; }
+  #storySpeaker { font-family:'Press Start 2P',monospace; font-size:7px; color:#ffd700; margin-bottom:8px; text-shadow:0 0 8px #ffd70055; }
+  #storyText { font-family:'Press Start 2P',monospace; font-size:6.5px; color:#e8e8e8; line-height:2.3; min-height:52px; }
+  #storyCursor { display:inline-block; width:7px; height:11px; background:#ffd700; margin-left:3px; vertical-align:middle; animation:cursorBlink .55s steps(1) infinite; }
+  @keyframes cursorBlink { 0%,49%{opacity:1}50%,100%{opacity:0} }
+
+  /* progress & hint */
+  #storyProgress { position:absolute; bottom:156px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:25; }
+  .story-dot { width:7px; height:7px; background:#333; border:1px solid #555; transition:all .3s; }
+  .story-dot.done { background:#ffd700; border-color:#ffd700; }
+  .story-dot.current { background:#ff7b2f; border-color:#ff7b2f; animation:dotPulse .9s ease-in-out infinite; }
+  @keyframes dotPulse { 0%,100%{opacity:1}50%{opacity:.35} }
+  #storyHint { position:absolute; bottom:73px; right:26px; font-family:'Press Start 2P',monospace; font-size:5px; color:#666; z-index:25; animation:hintBlink 1.2s steps(1) infinite; }
+  @keyframes hintBlink { 0%,49%{opacity:1}50%,100%{opacity:0} }
+  #storySkip { position:absolute; top:66px; right:14px; font-family:'Press Start 2P',monospace; font-size:5px; color:#444; background:transparent; border:1px solid #333; padding:5px 10px; cursor:pointer; z-index:25; transition:color .2s,border-color .2s; }
+  #storySkip:hover { color:#aaa; border-color:#666; }
+
+  /* scene title flash */
+  #sceneTitleCard { position:absolute; top:38%; left:50%; transform:translate(-50%,-50%); text-align:center; z-index:30; opacity:0; transition:opacity .5s; pointer-events:none; }
+  #sceneTitleCard.show { opacity:1; }
+  .scene-title-text { font-family:'Press Start 2P',monospace; font-size:10px; color:#ffd700; text-shadow:2px 2px #000,0 0 20px #ffd70066; display:block; margin-bottom:6px; }
+  .scene-title-loc { font-family:'Press Start 2P',monospace; font-size:6px; color:#bbb; text-shadow:1px 1px #000; }
+
+  /* pixel smoke */
+  .pixel-smoke { position:absolute; border-radius:50%; animation:smokeRise 2.5s ease-out infinite; opacity:0; }
+  @keyframes smokeRise { 0%{transform:translateY(0) scale(1);opacity:.65}100%{transform:translateY(-50px) scale(2.5);opacity:0} }
+
+  /* Pixel scanline overlay */
+  #titleScreen::after {
+    content:'';
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(
+      0deg, transparent 0, transparent 3px,
+      rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px
+    );
+    pointer-events:none;
+    z-index:100;
+  }
 
   /* ── GAME SCREEN ── */
   #gameScreen {
@@ -165,34 +530,244 @@
     margin:8px 4px;
   }
 
-  /* ── END SCREEN ── */
+  /* ── REVENUE TARGET BAR ── */
+  #targetBar {
+    position:absolute; top:40px; right:8px;
+    background:var(--ui-bg); border:1px solid #444;
+    padding:4px 8px; font-size:5px; color:#aaa; z-index:20;
+    border-radius:2px; text-align:right;
+  }
+  #targetInner { width:120px; height:7px; background:#333; border:1px solid #555; margin-top:3px; }
+  #targetFill { height:100%; background:linear-gradient(90deg,#e84040,#ffd700,#3db54a); transition:width .5s; }
+
+  /* ── DAY INDICATOR ── */
+  #dayDots {
+    position:absolute; top:40px; left:8px;
+    background:var(--ui-bg); border:1px solid #444;
+    padding:5px 8px; font-size:5px; color:#aaa; z-index:20;
+  }
   #endScreen {
     background: linear-gradient(180deg, #0d2137, #1a3a2a);
     width:800px; height:540px;
-    align-items:center; justify-content:center; flex-direction:column; gap:16px;
+    align-items:center; justify-content:center; flex-direction:column; gap:12px;
+    position:relative; overflow:hidden;
   }
-  .end-title { font-size:14px; color:var(--gold); text-shadow:2px 2px #000; }
+  #endScreen.win-bg { background: linear-gradient(180deg, #0d2137, #1a4a1a); }
+  #endScreen.lose-bg { background: linear-gradient(180deg, #2a0d0d, #1a1a2e); }
+  .end-title { font-size:13px; color:var(--gold); text-shadow:2px 2px #000; text-align:center; }
   .end-stats { font-size:7px; color:#fff; line-height:2.5; text-align:center; }
+  .end-stars { font-size:28px; letter-spacing:4px; margin:4px 0; }
+  .progress-bar-wrap { width:280px; background:#333; border:2px solid #555; height:16px; margin:4px auto; }
+  .progress-bar-fill { height:100%; background:linear-gradient(90deg,#ff7b2f,#ffd700); transition:width 1s; }
+  .progress-bar-label { font-size:6px; color:#aaa; text-align:center; margin-top:2px; }
   .btn-restart {
     padding:12px 24px; background:#ff7b2f; border:3px solid #fff;
     font-family:'Press Start 2P'; font-size:8px; color:#fff; cursor:pointer;
-    margin-top:12px;
+    margin-top:8px;
   }
+
+  /* ── TUTORIAL OVERLAY ── */
+  #tutorialOverlay {
+    position:absolute; inset:0; background:rgba(0,0,0,0.78);
+    display:none; align-items:center; justify-content:center;
+    z-index:200; flex-direction:column;
+  }
+  #tutorialOverlay.visible { display:flex; }
+
+  /* spotlight highlight area */
+  #tutorialSpotlight {
+    position:absolute;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.72);
+    border:2px solid var(--gold);
+    border-radius:4px;
+    transition: all 0.4s cubic-bezier(.4,0,.2,1);
+    pointer-events:none;
+    z-index:201;
+  }
+
+  /* speech bubble tooltip */
+  #tutorialBubble {
+    position:absolute;
+    background:#0d1b2a;
+    border:3px solid var(--gold);
+    border-radius:4px;
+    padding:14px 18px 14px 14px;
+    max-width:260px;
+    z-index:202;
+    transition: all 0.35s ease;
+    box-shadow: 4px 4px 0 #000, 0 0 20px #ffd70033;
+  }
+  #tutorialBubble::before {
+    content:'';
+    position:absolute;
+    border:8px solid transparent;
+  }
+  #tutorialBubble.arrow-bottom::before {
+    border-top-color:var(--gold);
+    bottom:-18px; left:50%; transform:translateX(-50%);
+  }
+  #tutorialBubble.arrow-top::before {
+    border-bottom-color:var(--gold);
+    top:-18px; left:50%; transform:translateX(-50%);
+  }
+  #tutorialBubble.arrow-left::before {
+    border-right-color:var(--gold);
+    left:-18px; top:50%; transform:translateY(-50%);
+  }
+  #tutorialBubble.arrow-right::before {
+    border-left-color:var(--gold);
+    right:-18px; top:50%; transform:translateY(-50%);
+  }
+
+  .tut-mascot { font-size:28px; float:left; margin-right:10px; margin-top:2px; }
+  .tut-step-label {
+    font-family:'Press Start 2P',monospace; font-size:5px;
+    color:var(--accent); margin-bottom:6px; letter-spacing:1px;
+  }
+  .tut-text {
+    font-family:'Press Start 2P',monospace; font-size:6.5px;
+    color:#e8e8e8; line-height:2.2; clear:both;
+  }
+  .tut-footer {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:12px; gap:8px;
+  }
+  .tut-dots { display:flex; gap:4px; }
+  .tut-dot {
+    width:6px; height:6px; border-radius:50%;
+    background:#333; border:1px solid #555; transition:all .25s;
+  }
+  .tut-dot.active { background:var(--gold); border-color:var(--gold); }
+  .tut-dot.done   { background:#3db54a; border-color:#3db54a; }
+  .btn-tut-next {
+    font-family:'Press Start 2P',monospace; font-size:6px;
+    padding:7px 14px; background:#cc4400; border:2px solid #ff7744;
+    color:#fff; cursor:pointer;
+    transition: background .15s;
+  }
+  .btn-tut-next:hover { background:#ff5500; }
+  .btn-tut-skip {
+    font-family:'Press Start 2P',monospace; font-size:5px;
+    background:transparent; border:1px solid #444;
+    color:#555; cursor:pointer; padding:5px 8px;
+    transition: color .2s, border-color .2s;
+  }
+  .btn-tut-skip:hover { color:#aaa; border-color:#888; }
 </style>
 </head>
 <body>
 
 <!-- TITLE SCREEN -->
 <div id="titleScreen" class="screen active">
-  <div class="title-sun"></div>
-  <div class="title-waves"></div>
-  <div class="title-sand"></div>
-  <div class="title-palm">🌴</div>
-  <div class="title-content">
-    <div class="title-logo">⚓ PANTAI KUTANG HERO ⚓<br>
-    <span style="font-size:8px;color:#fff">MISI: SELAMATKAN PANTAI KUTANG!</span></div>
-    <div class="title-sub">Time-Management Tycoon · O2O Reward System<br>SMK Negeri 1 Brondong – FIKSI 2026</div>
-    <button class="btn-start" onclick="startGame()">▶ MULAI BERMAIN</button>
+  <!-- Sky & atmosphere -->
+  <div class="ts-stars"></div>
+  <div class="ts-sun"></div>
+  <div class="ts-reflection"></div>
+
+  <!-- Background island -->
+  <div class="ts-island"></div>
+
+  <!-- Ocean -->
+  <div class="ts-ocean">
+    <div class="ts-wave1"></div>
+    <div class="ts-wave2"></div>
+  </div>
+
+  <!-- Sand -->
+  <div class="ts-sand"></div>
+
+  <!-- Warung kanan -->
+  <div class="ts-warung-roof"></div>
+  <div class="ts-warung"></div>
+
+  <!-- Palm trees -->
+  <div class="ts-palm-l">🌴</div>
+  <div class="ts-palm-r">🌴</div>
+
+  <!-- Beach umbrella -->
+  <div class="ts-umbrella">☂️</div>
+
+  <!-- Characters -->
+  <div class="ts-char-visitor">🏖️</div>
+  <div class="ts-char-mgr">👷</div>
+  <div class="ts-char-sheep">🐑</div>
+
+  <!-- Shells -->
+  <div class="ts-shell1">🐚</div>
+  <div class="ts-shell2">🐚</div>
+
+  <!-- Sign board (center logo) -->
+  <div class="ts-sign-wrap">
+    <div class="ts-sign">
+      <span class="ts-logo-pantai">
+        <span class="ts-logo-flag">🇮🇩</span> PANTAI <span class="ts-logo-flag">🇮🇩</span>
+      </span>
+      <span class="ts-logo-kutang">KUTANG</span>
+      <span class="ts-logo-hero">HERO</span>
+      <span class="ts-sub-sign">SIMULASI PANTAI TROPIK</span>
+    </div>
+    <div class="ts-sign-post-l"></div>
+    <div class="ts-sign-post-r"></div>
+  </div>
+
+  <!-- Menu buttons -->
+  <div class="ts-menu">
+    <button class="ts-btn ts-btn-main" onclick="startGame()">▶ [MULAI GAME]</button>
+    <button class="ts-btn" onclick="showHowToPlay()">📖 [CARA MAIN]</button>
+    <button class="ts-btn" onclick="openO2OFromTitle()">🎁 [O2O REWARD]</button>
+  </div>
+
+  <!-- Footer -->
+  <div class="ts-footer">SMK NEGERI 1 BRONDONG · FIKSI 2026 · TIME-MANAGEMENT TYCOON</div>
+</div>
+
+<!-- OPENING STORY SCREEN -->
+<div id="storyScreen" class="screen">
+  <div id="storyCinema">
+    <div class="cinema-bar"></div>
+    <div id="storyScene">
+      <!-- Scene backgrounds -->
+      <div class="scene-bg sbg-meeting" id="sbg0"></div>
+      <div class="scene-bg sbg-pantai"  id="sbg1"></div>
+      <div class="scene-bg sbg-factory" id="sbg2"></div>
+      <div class="scene-bg sbg-pantai"  id="sbg3"></div>
+      <div class="scene-bg sbg-challenge" id="sbg4"></div>
+
+      <!-- Scene deco canvas -->
+      <canvas id="storyCanvas" width="800" height="420" style="position:absolute;inset:0;pointer-events:none;z-index:5"></canvas>
+
+      <!-- Scene title card -->
+      <div id="sceneTitleCard">
+        <span class="scene-title-text" id="sceneTitle"></span>
+        <span class="scene-title-loc" id="sceneLoc"></span>
+      </div>
+
+      <!-- Progress dots -->
+      <div id="storyProgress">
+        <div class="story-dot current" id="sdot0"></div>
+        <div class="story-dot" id="sdot1"></div>
+        <div class="story-dot" id="sdot2"></div>
+        <div class="story-dot" id="sdot3"></div>
+        <div class="story-dot" id="sdot4"></div>
+      </div>
+
+      <!-- Portrait -->
+      <div id="storyPortrait">
+        <div class="portrait-emoji" id="portraitEmoji">🧓</div>
+        <div class="portrait-name" id="portraitName">KEPALA<br>DESA</div>
+      </div>
+
+      <!-- Dialog box -->
+      <div id="storyDialog">
+        <div id="storySpeaker">Kepala Desa</div>
+        <div id="storyText"><span id="storyTyped"></span><span id="storyCursor"></span></div>
+      </div>
+
+      <!-- Hint & Skip -->
+      <div id="storyHint">▶ KLIK / SPASI</div>
+      <button id="storySkip" onclick="skipStory()">SKIP ▶▶</button>
+    </div>
+    <div class="cinema-bar"></div>
   </div>
 </div>
 
@@ -228,6 +803,33 @@
 
   <div id="tooltip"></div>
   <div id="msgBox"></div>
+
+  <!-- Target revenue bar -->
+  <div id="targetBar">
+    <span>🎯 TARGET Rp5.000</span><br>
+    <span style="color:#ffd700">Rp<span id="targetNow">0</span></span>
+    <div id="targetInner"><div id="targetFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- Day dots -->
+  <div id="dayDots">HARI: <span id="dayDotsInner">◉○○○○○○</span></div>
+
+  <!-- TUTORIAL OVERLAY -->
+  <div id="tutorialOverlay">
+    <div id="tutorialSpotlight"></div>
+    <div id="tutorialBubble" class="arrow-bottom">
+      <div class="tut-step-label" id="tutStepLabel">LANGKAH 1 / 6</div>
+      <div class="tut-mascot">👷</div>
+      <div class="tut-text" id="tutText">Selamat datang di<br>Pantai Kutang!<br>Kamu adalah Manager Pantai.<br>Yuk pelajari cara mainnya!</div>
+      <div class="tut-footer">
+        <div class="tut-dots" id="tutDots"></div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="btn-tut-skip" onclick="closeTutorial()">SKIP</button>
+          <button class="btn-tut-next" id="btnTutNext" onclick="nextTutStep()">LANJUT ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- O2O POPUP -->
@@ -238,9 +840,10 @@
       Tukarkan Poin Pesona Kutang-mu<br>dengan hadiah NYATA di Pantai Kutang!<br><br>
       Poin kamu: <span class="o2o-poin" id="o2oPoinVal">0</span> pts
       <br><br>
-      <span style="color:#aaa;font-size:6px">● 50 pts → Keychain Perahu Pantai Kutang<br>
-      ● 100 pts → Kaos "I Saved Pantai Kutang"<br>
-      ● 200 pts → Voucher Diskon 50% Perahu Naga<br><br>
+      <span style="color:#aaa;font-size:6px;line-height:2.5">
+      <span id="tier1" style="color:#888">🥉 50 pts → Keychain Perahu Pantai Kutang</span><br>
+      <span id="tier2" style="color:#888">🥈 100 pts → Kaos "I Saved Pantai Kutang"</span><br>
+      <span id="tier3" style="color:#888">🥇 200 pts → Voucher Diskon 50% Perahu Naga</span><br><br>
       ⚠️ Hadiah hanya bisa diklaim langsung<br>di lokasi Pantai Kutang, Lamongan!</span>
     </div>
     <button class="btn-claim" onclick="claimReward()">🎉 KLAIM REWARD!</button>
@@ -251,6 +854,9 @@
 <!-- END SCREEN -->
 <div id="endScreen" class="screen">
   <div class="end-title" id="endTitle">LEVEL SELESAI!</div>
+  <div class="end-stars" id="endStars">⭐⭐⭐</div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="endProgressFill" style="width:0%"></div></div>
+  <div class="progress-bar-label" id="endProgressLabel"></div>
   <div class="end-stats" id="endStats"></div>
   <button class="btn-restart" onclick="restartGame()">🔄 MAIN LAGI</button>
 </div>
@@ -306,6 +912,8 @@ let notifQueue = [];
 let notifTimer = 0;
 let notifMsg = '';
 let gameOver = false;
+let totalVisitorsServed = 0;
+let dailyRevenue = []; // track per-day revenue for end screen
 
 const ITEMS = {
   payung: { label:'Payung', emoji:'☂', cost:500, revenue:50, capacity:2, color:'#e84040' },
@@ -524,13 +1132,30 @@ function drawNotif(){
   if(!notifMsg) return;
   ctx.globalAlpha = Math.min(1, notifTimer/0.5);
   ctx.fillStyle='rgba(0,20,40,0.85)';
-  ctx.fillRect(W/2-110, 60, 220, 28);
+  ctx.fillRect(W/2-130, 60, 260, 28);
   ctx.fillStyle='#ffd700';
   ctx.font='7px "Press Start 2P"';
   ctx.textAlign='center';
   ctx.fillText(notifMsg, W/2, 79);
   ctx.textAlign='left';
   ctx.globalAlpha=1;
+}
+
+function drawDayProgress(){
+  // Mini day indicator on canvas bottom-right
+  const bx = W - 90, by = H - 18;
+  ctx.fillStyle='rgba(0,0,0,0.6)';
+  ctx.fillRect(bx-4, by-12, 88, 16);
+  ctx.font='5px "Press Start 2P"';
+  ctx.fillStyle='#aaa';
+  ctx.fillText('MISI:', bx, by);
+  for(let i=0;i<maxDays;i++){
+    const dx = bx+32+i*7;
+    if(i+1 < day) { ctx.fillStyle='#3db54a'; }
+    else if(i+1 === day) { ctx.fillStyle='#ffd700'; }
+    else { ctx.fillStyle='#444'; }
+    ctx.fillRect(dx, by-8, 5, 8);
+  }
 }
 
 function drawSkyBG(){
@@ -626,7 +1251,14 @@ function revenueCalc(){
   objects.forEach(o=>{
     const it = ITEMS[o.type];
     const nearVisitors = visitors.filter(v=> Math.abs(v.x-o.x)<60 && Math.abs(v.y-o.y)<60).length;
-    rev += it.revenue * Math.min(nearVisitors, it.capacity||1) * 0.1;
+    if(o.type === 'toilet'){
+      // Toilet: no revenue but boosts reputation over time
+      if(nearVisitors > 0 && reputation < 100){
+        reputation = Math.min(100, reputation + 0.05);
+      }
+    } else {
+      rev += it.revenue * Math.min(nearVisitors, it.capacity||1) * 0.1;
+    }
   });
   // rep bonus
   rev *= (reputation / 80);
@@ -657,6 +1289,22 @@ function updateHUD(){
   document.getElementById('hudPoin').textContent = poinPesona;
   document.getElementById('hudRep').textContent = reputation;
   document.getElementById('dayLabel').textContent = `Hari ${day}/${maxDays}`;
+}
+
+function updateTargetBar(){
+  const pct = Math.min(100, (money/5000)*100);
+  document.getElementById('targetFill').style.width = pct+'%';
+  document.getElementById('targetNow').textContent = money.toLocaleString('id');
+}
+
+function updateDayDots(){
+  let dots = '';
+  for(let i=1;i<=maxDays;i++){
+    if(i < day) dots += '✅';
+    else if(i === day) dots += '◉';
+    else dots += '○';
+  }
+  document.getElementById('dayDotsInner').textContent = dots;
 }
 
 let mouseX=0, mouseY=0;
@@ -714,9 +1362,11 @@ function gameLoop(ts){
     if(rev>0){
       money += rev;
       poinPesona += Math.floor(rev/50);
+      totalVisitorsServed += visitors.filter(v=>v.happy).length;
     }
     revenueTimer = 1;
     updateHUD();
+    updateTargetBar();
   }
 
   // Notif timer
@@ -733,6 +1383,7 @@ function gameLoop(ts){
   drawVisitors();
   drawPlayer();
   drawPreviewItem(mouseX, mouseY);
+  drawDayProgress();
   drawNotif();
 
   requestAnimationFrame(gameLoop);
@@ -740,20 +1391,36 @@ function gameLoop(ts){
 
 function endDay(){
   running = false;
+  const revBefore = dailyRevenue.reduce((a,b)=>a+b,0);
+  const todayRev = money - revBefore - 2000; // subtract starting money
+  // store cumulative
+  dailyRevenue.push(Math.max(0, money - 2000 - dailyRevenue.reduce((a,b)=>a+b,0)));
+
   if(day >= maxDays){
     showEndScreen();
     return;
   }
   // Day summary popup
   const msgBox = document.getElementById('msgBox');
+  const target = 5000;
+  const pct = Math.min(100, Math.floor((money/target)*100));
+  const trashWarn = trash.length > 0 ? `<div style="color:#e84040;font-size:6px">⚠️ Masih ada ${trash.length} sampah! Rep turun!</div>` : '<div style="color:#3db54a;font-size:6px">✨ Pantai bersih! +Rep</div>';
   msgBox.innerHTML = `
-    <div style="color:#ffd700;margin-bottom:8px">⭐ HARI ${day} SELESAI!</div>
-    <div>💰 Uang: Rp${money.toLocaleString('id')}</div>
+    <div style="color:#ffd700;margin-bottom:8px;font-size:9px">⭐ HARI ${day} SELESAI!</div>
+    <div>💰 Total Uang: Rp${money.toLocaleString('id')}</div>
+    <div>🎯 Target Hari-7: Rp${target.toLocaleString('id')} (${pct}%)</div>
     <div>⭐ Poin Pesona: ${poinPesona}</div>
     <div>😊 Reputasi: ${reputation}%</div>
-    <div style="margin-top:12px"><button class="btn-start" style="animation:none;font-size:7px;padding:8px 16px" onclick="nextDay()">▶ HARI BERIKUTNYA</button></div>
+    <div>🏗️ Fasilitas: ${objects.length} unit</div>
+    ${trashWarn}
+    <div style="margin-top:10px"><button class="btn-start" style="animation:none;font-size:7px;padding:8px 16px" onclick="nextDay()">▶ HARI ${day+1} →</button></div>
   `;
   msgBox.classList.add('visible');
+  // Auto-apply trash reputation penalty if trash remains
+  if(trash.length > 0){
+    reputation = Math.max(10, reputation - trash.length);
+    updateHUD();
+  }
 }
 
 function nextDay(){
@@ -764,6 +1431,8 @@ function nextDay(){
   visitorSpawnTimer = 2;
   running = true;
   updateHUD();
+  updateTargetBar();
+  updateDayDots();
   lastTime = performance.now();
   requestAnimationFrame(gameLoop);
 }
@@ -772,24 +1441,46 @@ function showEndScreen(){
   document.getElementById('gameScreen').classList.remove('active');
   const es = document.getElementById('endScreen');
   es.classList.add('active');
-  const win = money >= 5000;
+  const target = 5000;
+  const win = money >= target;
+  const pct = Math.min(100, Math.floor((money/target)*100));
+
+  // Stars rating
+  let stars = '☆☆☆';
+  if(win){
+    if(reputation >= 80 && objects.length >= 6) stars = '⭐⭐⭐';
+    else if(reputation >= 60 || objects.length >= 4) stars = '⭐⭐☆';
+    else stars = '⭐☆☆';
+  }
+
+  es.className = 'screen active ' + (win ? 'win-bg' : 'lose-bg');
   document.getElementById('endTitle').textContent = win ? '🏆 PANTAI TERSELAMATKAN!' : '😢 PANTAI DITUTUP...';
   document.getElementById('endTitle').style.color = win ? '#ffd700' : '#e84040';
+  document.getElementById('endStars').textContent = stars;
+
+  // Progress bar
+  document.getElementById('endProgressFill').style.width = pct+'%';
+  document.getElementById('endProgressLabel').textContent = `Rp${money.toLocaleString('id')} / Rp${target.toLocaleString('id')} (${pct}%)`;
+
   document.getElementById('endStats').innerHTML = `
-    Uang Akhir: Rp${money.toLocaleString('id')}<br>
-    Poin Pesona Kutang: ${poinPesona} pts<br>
-    Reputasi Pantai: ${reputation}%<br>
-    Fasilitas Dibangun: ${objects.length} unit<br>
-    Pengunjung Dilayani: ${Math.floor(visitors.length + day*5)}<br>
+    💰 Uang Akhir: Rp${money.toLocaleString('id')}<br>
+    ⭐ Poin Pesona Kutang: ${poinPesona} pts<br>
+    😊 Reputasi Pantai: ${reputation}%<br>
+    🏗️ Fasilitas Dibangun: ${objects.length} unit<br>
+    👥 Pengunjung Dilayani: ${totalVisitorsServed} orang<br>
     <br>
-    <span style="color:#ffd700">${win ? '✅ Kamu membuktikan Pantai Kutang menguntungkan!' : '❌ Coba lagi — Pantai Kutang butuhmu!'}</span>
+    <span style="color:${win?'#ffd700':'#e84040'}">${win ? '✅ Pantai Kutang kembali berjaya!' : '❌ Coba lagi – Pantai Kutang butuhmu!'}</span>
     <br><br>
-    <span style="color:#aaa;font-size:5px">Tukarkan ${poinPesona} Poin Pesona Kutang-mu<br>di BUMDes Pantai Kutang, Lamongan secara langsung!</span>
+    <span style="color:#aaa;font-size:5px">Tukarkan ${poinPesona} Poin Pesona Kutang-mu<br>di BUMDes Pantai Kutang, Lamongan secara langsung!<br>SMK Negeri 1 Brondong – FIKSI 2026</span>
   `;
 }
 
 function openO2O(){
   document.getElementById('o2oPoinVal').textContent = poinPesona;
+  // highlight tiers
+  document.getElementById('tier1').style.color = poinPesona >= 50  ? '#ffd700' : '#555';
+  document.getElementById('tier2').style.color = poinPesona >= 100 ? '#ffd700' : '#555';
+  document.getElementById('tier3').style.color = poinPesona >= 200 ? '#ffd700' : '#555';
   document.getElementById('o2oPopup').classList.add('visible');
 }
 function closeO2O(){
@@ -797,16 +1488,479 @@ function closeO2O(){
 }
 function claimReward(){
   if(poinPesona < 50){
-    showNotif('⚠️ Poin belum cukup! (min 50)');
+    showNotif('⚠️ Poin belum cukup! (min 50 pts)');
     closeO2O();
     return;
   }
-  showNotif('🎁 Klaim di Pantai Kutang Lamongan!');
+  let tier, reward;
+  if(poinPesona >= 200){ tier='GOLD'; reward='Voucher Perahu Naga 50%'; }
+  else if(poinPesona >= 100){ tier='SILVER'; reward='Kaos I Saved Pantai Kutang'; }
+  else { tier='BRONZE'; reward='Keychain Perahu'; }
+  showNotif(`🎁 ${tier}: ${reward} – klaim di lokasi!`);
   closeO2O();
 }
 
-function startGame(){
+function showHowToPlay(){
+  // Re-use msgBox overlay on title screen temporarily by creating a modal
+  const overlay = document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:#000a;z-index:200;display:flex;align-items:center;justify-content:center';
+  overlay.innerHTML=`
+    <div style="background:#0d1b2a;border:4px solid #ffd700;padding:24px 32px;max-width:400px;font-family:'Press Start 2P',monospace;text-align:center">
+      <div style="color:#ffd700;font-size:9px;margin-bottom:16px">📖 CARA BERMAIN</div>
+      <div style="font-size:6px;color:#fff;line-height:2.8;text-align:left">
+        🎮 WASD / Arrow = Gerakkan Manajer<br>
+        🏗️ Klik tombol bawah, lalu klik peta = Bangun<br>
+        🗑️ Tombol Bersihkan = Hapus semua sampah<br>
+        👥 Pengunjung senang dekat fasilitas<br>
+        💰 Revenue = otomatis tiap detik<br>
+        ⭐ Poin = dari revenue + bersihkan sampah<br>
+        🎯 TARGET: Rp5.000 di Hari ke-7<br>
+        📅 7 hari × 60 detik = 7 menit total<br>
+        🚿 Toilet = naikkan reputasi pengunjung<br>
+        😊 Reputasi tinggi = revenue lebih besar!
+      </div>
+      <button onclick="this.closest('div[style]').remove()" style="margin-top:16px;padding:10px 24px;background:#ff7b2f;border:3px solid #fff;font-family:'Press Start 2P',monospace;font-size:7px;color:#fff;cursor:pointer">✅ MENGERTI!</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function openO2OFromTitle(){
+  // Show O2O popup but with 0 points (preview mode)
+  document.getElementById('o2oPoinVal').textContent = '0 (belum main)';
+  document.getElementById('tier1').style.color = '#555';
+  document.getElementById('tier2').style.color = '#555';
+  document.getElementById('tier3').style.color = '#555';
+  document.getElementById('o2oPopup').classList.add('visible');
+}
+
+// ════════════════════════════════════════════
+//  OPENING STORY ENGINE
+// ════════════════════════════════════════════
+
+const STORY_SCENES = [
+  {
+    bg: 0,
+    title: '📰 BERITA MENGEJUTKAN',
+    loc: 'Balai Desa Brondong · Pagi Hari',
+    speaker: 'Kepala Desa',
+    portrait: '🧓',
+    portraitName: 'KEPALA\nDESA',
+    color: '#ffd700',
+    draw: drawSceneMeeting,
+    text: 'Anak muda... aku harus bicara serius. Ada kabar buruk dari kabupaten. Pantai Kutang... terancam DITUTUP.',
+  },
+  {
+    bg: 1,
+    title: '🏖️ PANTAI KUTANG',
+    loc: 'Pantai Kutang, Lamongan · Sore Hari',
+    speaker: 'Kepala Desa',
+    portrait: '🧓',
+    portraitName: 'KEPALA\nDESA',
+    color: '#ffd700',
+    draw: drawScenePantai,
+    text: 'Pantai Kutang adalah kebanggaan kita. Tapi pejabat kabupaten bilang pantai ini tidak menguntungkan dan akan diubah menjadi kawasan industri!',
+  },
+  {
+    bg: 2,
+    title: '🏭 ANCAMAN INDUSTRI',
+    loc: 'Rencana Tata Ruang Kabupaten',
+    speaker: 'Narator',
+    portrait: '📋',
+    portraitName: 'LAPORAN\nKABUPATEN',
+    color: '#e84040',
+    draw: drawSceneFactory,
+    text: 'Jika tidak ada bukti keuntungan nyata dalam waktu dekat, buldoser akan meratakan Pantai Kutang. Pohon kelapa, warung, perahu... semuanya akan hilang.',
+  },
+  {
+    bg: 3,
+    title: '🌟 HARAPAN TERAKHIR',
+    loc: 'Balai Desa · Malam Hari',
+    speaker: 'Kepala Desa',
+    portrait: '🧓',
+    portraitName: 'KEPALA\nDESA',
+    color: '#ffd700',
+    draw: drawScenePantaiSunset,
+    text: 'Makanya aku memilihmu — Manajer BUMDes Junior terbaik desa ini! Kamu punya 7 hari simulasi untuk membuktikan bahwa Pantai Kutang BISA menguntungkan!',
+  },
+  {
+    bg: 4,
+    title: '⚡ MISI DIMULAI!',
+    loc: 'Pantai Kutang · Fajar Hari Pertama',
+    speaker: 'Kamu',
+    portrait: '👷',
+    portraitName: 'MANAJER\nBUMDes Jr.',
+    color: '#3db54a',
+    draw: drawSceneMission,
+    text: 'Siap, Pak! Saya akan bangun fasilitas, jaga kebersihan, dan layani pengunjung dengan baik. Pantai Kutang HARUS dipertahankan! 💪',
+  },
+];
+
+let storyIdx = 0;
+let typeTimer = null;
+let typePos = 0;
+let typingDone = false;
+let storyCanvas2d = null;
+let storyAnimFrame = null;
+
+function openStory() {
+  storyIdx = 0;
   document.getElementById('titleScreen').classList.remove('active');
+  document.getElementById('storyScreen').classList.add('active');
+  storyCanvas2d = document.getElementById('storyCanvas').getContext('2d');
+  renderStoryScene(0);
+  document.getElementById('storyScreen').addEventListener('click', onStoryClick);
+  document.addEventListener('keydown', onStoryKey);
+  animateStoryCanvas();
+}
+
+function onStoryKey(e) {
+  if(e.code === 'Space' || e.code === 'Enter') onStoryClick();
+}
+
+function onStoryClick() {
+  if (!typingDone) {
+    // Fast-forward typing
+    clearTimeout(typeTimer);
+    const scene = STORY_SCENES[storyIdx];
+    document.getElementById('storyTyped').textContent = scene.text;
+    typingDone = true;
+    return;
+  }
+  storyIdx++;
+  if (storyIdx >= STORY_SCENES.length) {
+    endStory();
+  } else {
+    renderStoryScene(storyIdx);
+  }
+}
+
+function skipStory() {
+  endStory();
+}
+
+function endStory() {
+  clearTimeout(typeTimer);
+  cancelAnimationFrame(storyAnimFrame);
+  document.getElementById('storyScreen').removeEventListener('click', onStoryClick);
+  document.removeEventListener('keydown', onStoryKey);
+  document.getElementById('storyScreen').classList.remove('active');
+  actuallyStartGame();
+}
+
+function renderStoryScene(idx) {
+  const scene = STORY_SCENES[idx];
+
+  // Switch backgrounds
+  document.querySelectorAll('.scene-bg').forEach((el,i) => {
+    el.classList.toggle('active', i === scene.bg);
+  });
+
+  // Progress dots
+  for(let i=0;i<STORY_SCENES.length;i++){
+    const dot = document.getElementById('sdot'+i);
+    if(dot){
+      dot.className = 'story-dot' + (i<idx?' done':i===idx?' current':'');
+    }
+  }
+
+  // Scene title flash
+  const card = document.getElementById('sceneTitleCard');
+  const [titleText, ...locParts] = [scene.title, scene.loc];
+  document.getElementById('sceneTitle').textContent = scene.title;
+  document.getElementById('sceneLoc').textContent = scene.loc;
+  card.classList.add('show');
+  setTimeout(() => card.classList.remove('show'), 1800);
+
+  // Portrait
+  document.getElementById('portraitEmoji').textContent = scene.portrait;
+  document.getElementById('portraitName').textContent = scene.portraitName.replace('\\n','\n');
+  document.getElementById('portraitName').innerHTML = scene.portraitName.replace('\n','<br>');
+
+  // Speaker
+  document.getElementById('storySpeaker').textContent = scene.speaker;
+  document.getElementById('storySpeaker').style.color = scene.color;
+
+  // Start typewriter
+  typePos = 0;
+  typingDone = false;
+  document.getElementById('storyTyped').textContent = '';
+  typewriteScene(scene.text);
+}
+
+function typewriteScene(text) {
+  clearTimeout(typeTimer);
+  if (typePos < text.length) {
+    document.getElementById('storyTyped').textContent = text.slice(0, typePos);
+    typePos++;
+    const delay = text[typePos-1] === '.' || text[typePos-1] === '!' || text[typePos-1] === ',' ? 80 : 28;
+    typeTimer = setTimeout(() => typewriteScene(text), delay);
+  } else {
+    document.getElementById('storyTyped').textContent = text;
+    typingDone = true;
+  }
+}
+
+// ── Story canvas drawings ──
+
+function animateStoryCanvas() {
+  if (!storyCanvas2d) return;
+  const sc = storyCanvas2d;
+  sc.clearRect(0, 0, 800, 420);
+  const scene = STORY_SCENES[storyIdx];
+  if (scene && scene.draw) scene.draw(sc, Date.now());
+  storyAnimFrame = requestAnimationFrame(animateStoryCanvas);
+}
+
+function drawSceneMeeting(sc, t) {
+  // Balai desa interior - table, chairs, lamp
+  const flicker = 0.9 + Math.sin(t/300)*0.1;
+  // floor
+  sc.fillStyle = '#2a1a0a';
+  sc.fillRect(0, 280, 800, 140);
+  // wall
+  sc.fillStyle = '#1a1228';
+  sc.fillRect(0, 0, 800, 280);
+  // lamp glow
+  const g = sc.createRadialGradient(400, 60, 0, 400, 60, 180);
+  g.addColorStop(0, `rgba(255,220,100,${0.18*flicker})`);
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  sc.fillStyle = g;
+  sc.fillRect(0, 0, 800, 420);
+  // hanging lamp
+  sc.fillStyle = '#c8a020';
+  sc.fillRect(392, 0, 16, 50);
+  sc.beginPath(); sc.arc(400, 60, 22, 0, Math.PI*2);
+  sc.fillStyle = `rgba(255,230,120,${flicker})`; sc.fill();
+  sc.fillStyle = '#8a6010';
+  sc.beginPath(); sc.arc(400, 60, 22, 0, Math.PI); sc.fill();
+  // table
+  sc.fillStyle = '#5a2d00'; sc.fillRect(180, 240, 440, 20);
+  sc.fillStyle = '#3a1a00'; sc.fillRect(200, 260, 20, 60); sc.fillRect(560, 260, 20, 60);
+  // papers on table
+  sc.fillStyle = '#f0e8d0'; sc.fillRect(280, 228, 60, 12); sc.fillRect(380, 228, 80, 12); sc.fillRect(470, 228, 50, 12);
+  sc.fillStyle = '#e84040'; sc.fillRect(290, 230, 40, 2); sc.fillRect(290, 233, 30, 2);
+  // left chair (kepala desa side)
+  sc.fillStyle = '#6b3510'; sc.fillRect(120, 220, 50, 80);
+  sc.fillStyle = '#5a2800'; sc.fillRect(120, 200, 50, 25);
+  // right chair (player side)
+  sc.fillStyle = '#6b3510'; sc.fillRect(630, 220, 50, 80);
+  sc.fillStyle = '#5a2800'; sc.fillRect(630, 200, 50, 25);
+  // window with moonlight
+  sc.fillStyle = '#0a1a2a'; sc.fillRect(80, 60, 100, 120);
+  sc.fillStyle = '#1a3a5a'; sc.fillRect(84, 64, 92, 112);
+  sc.strokeStyle = '#5a3a10'; sc.lineWidth = 6;
+  sc.strokeRect(80, 60, 100, 120);
+  // moon
+  sc.fillStyle = '#ffe8a0'; sc.beginPath(); sc.arc(130, 120, 18, 0, Math.PI*2); sc.fill();
+  // pixel stars outside
+  [[100,75],[115,90],[145,80],[110,110]].forEach(([x,y])=>{
+    sc.fillStyle=`rgba(255,255,200,${0.5+Math.sin(t/500+x)*0.5})`;
+    sc.fillRect(x,y,2,2);
+  });
+  // flag merah putih on wall
+  sc.fillStyle = '#e84040'; sc.fillRect(680, 80, 60, 20);
+  sc.fillStyle = '#f0f0f0'; sc.fillRect(680, 100, 60, 20);
+  sc.fillStyle = '#5a2d00'; sc.fillRect(676, 70, 6, 70);
+}
+
+function drawScenePantai(sc, t) {
+  const wave = Math.sin(t/600);
+  // water shimmer
+  for(let i=0;i<20;i++){
+    const wx = (i*44 + (t/20)%44) % 800;
+    sc.fillStyle = `rgba(255,255,255,${0.08+Math.sin(t/400+i)*0.06})`;
+    sc.fillRect(wx, 140+Math.sin(t/700+i)*4, 28, 4);
+  }
+  // beach sand
+  sc.fillStyle = '#d4a030'; sc.fillRect(0, 240, 800, 180);
+  sc.fillStyle = '#e8b84a'; sc.fillRect(0, 238, 800, 8);
+  // palm trees
+  drawStoryPalm(sc, 80, 280, t);
+  drawStoryPalm(sc, 680, 270, t);
+  drawStoryPalm(sc, 350, 260, t);
+  // boats on water
+  sc.fillStyle = '#8B4513'; sc.fillRect(200+wave*8, 195, 60, 18);
+  sc.fillStyle = '#c45500'; sc.fillRect(205+wave*8, 180, 50, 16);
+  sc.fillStyle = '#fff8'; sc.fillRect(228+wave*8, 160, 4, 20);
+  sc.fillStyle = '#ff444488'; sc.beginPath();
+  sc.moveTo(232+wave*8,158); sc.lineTo(248+wave*8,172); sc.lineTo(232+wave*8,172); sc.fill();
+  // umbrella & chair
+  sc.fillStyle = '#e84040'; sc.beginPath();
+  sc.moveTo(520,255); sc.lineTo(560,255); sc.lineTo(540,228); sc.fill();
+  sc.fillStyle = '#fff'; sc.beginPath();
+  sc.moveTo(530,255); sc.lineTo(540,228); sc.lineTo(542,228); sc.lineTo(532,255); sc.fill();
+  sc.fillStyle = '#aaa'; sc.fillRect(538,228,3,30);
+  sc.fillStyle = '#c8902044'; sc.fillRect(515,258,50,6);
+  // shells
+  sc.font='14px serif'; sc.fillText('🐚',160,268); sc.fillText('🐚',600,275); sc.fillText('🌊',350,218);
+}
+
+function drawStoryPalm(sc, x, y, t) {
+  const sway = Math.sin(t/1200+x)*3;
+  sc.strokeStyle='#6b4010'; sc.lineWidth=8;
+  sc.beginPath(); sc.moveTo(x,y);
+  sc.bezierCurveTo(x+sway*2,y-40, x+sway*3+10,y-70, x+sway*4+14,y-90);
+  sc.stroke();
+  // leaves
+  const lx=x+sway*4+14, ly=y-90;
+  [[-30,-10],[-15,-24],[0,-28],[18,-22],[28,-8]].forEach(([dx,dy])=>{
+    sc.strokeStyle='#2d7a20'; sc.lineWidth=4;
+    sc.beginPath(); sc.moveTo(lx,ly); sc.lineTo(lx+dx,ly+dy); sc.stroke();
+  });
+  sc.fillStyle='#3a9a28'; sc.beginPath(); sc.arc(lx,ly,6,0,Math.PI*2); sc.fill();
+}
+
+function drawSceneFactory(sc, t) {
+  // Dark industrial scene
+  // ground
+  sc.fillStyle = '#1a1208'; sc.fillRect(0, 280, 800, 140);
+  // buildings
+  [[100,120,120,160],[260,80,100,200],[420,100,140,180],[600,60,120,220]].forEach(([x,w,h,bot])=>{
+    sc.fillStyle='#1a1818'; sc.fillRect(x,bot,w,h);
+    sc.fillStyle='#111'; sc.fillRect(x,bot,w,8);
+    // windows (some lit red/orange)
+    for(let wx=x+10;wx<x+w-16;wx+=22){
+      for(let wy=bot+20;wy<bot+h-10;wy+=24){
+        const lit=Math.sin(t/800+wx+wy)>0.3;
+        sc.fillStyle=lit?'#ff440044':'#0a0a0a';
+        sc.fillRect(wx,wy,14,14);
+      }
+    }
+  });
+  // chimneys + smoke
+  [[150,60],[280,40],[450,50],[640,30]].forEach(([x,bot],i)=>{
+    sc.fillStyle='#222'; sc.fillRect(x,bot,18,60);
+    // animated smoke
+    const sy = bot - 10 - ((t/30+i*40)%60);
+    const sa = 1 - ((t/30+i*40)%60)/60;
+    sc.fillStyle=`rgba(80,70,60,${sa*0.7})`;
+    const ss = 8 + ((t/30+i*40)%60)*0.4;
+    sc.beginPath(); sc.arc(x+9, sy, ss, 0, Math.PI*2); sc.fill();
+  });
+  // pollution sky
+  const sg = sc.createLinearGradient(0,0,0,280);
+  sg.addColorStop(0,'rgba(30,10,5,0.8)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+  sc.fillStyle=sg; sc.fillRect(0,0,800,280);
+  // "X" on map overlay - warning sign
+  sc.fillStyle='#e8404044';
+  sc.font='bold 80px serif';
+  // large stamp-like X
+  sc.save(); sc.globalAlpha=0.12+Math.sin(t/500)*0.04;
+  sc.fillStyle='#e84040';
+  sc.font='200px "Press Start 2P",monospace';
+  sc.fillText('✕',200,320);
+  sc.restore();
+  // red border pulse
+  sc.save();
+  sc.globalAlpha=0.15+Math.sin(t/400)*0.1;
+  sc.strokeStyle='#e84040'; sc.lineWidth=8;
+  sc.strokeRect(4,4,792,412);
+  sc.restore();
+}
+
+function drawScenePantaiSunset(sc, t) {
+  // golden hour pantai - hopeful
+  const wave = Math.sin(t/500);
+  // water
+  for(let i=0;i<18;i++){
+    const wx=(i*48+(t/18)%48)%800;
+    sc.fillStyle=`rgba(255,200,80,${0.1+Math.sin(t/400+i)*0.07})`;
+    sc.fillRect(wx,160+Math.sin(t/600+i)*5,32,5);
+  }
+  // sun reflection
+  const rg=sc.createLinearGradient(360,180,440,270);
+  rg.addColorStop(0,'rgba(255,200,50,0.4)');
+  rg.addColorStop(1,'rgba(0,0,0,0)');
+  sc.fillStyle=rg; sc.fillRect(350,180,100,90);
+  // beach
+  sc.fillStyle='#c89020'; sc.fillRect(0,248,800,172);
+  sc.fillStyle='#e0a838'; sc.fillRect(0,245,800,10);
+  // palm trees
+  drawStoryPalm(sc,100,288,t);
+  drawStoryPalm(sc,650,275,t);
+  // family visitors walking
+  const wx2=200+Math.sin(t/2000)*20;
+  sc.fillStyle='#ffcc99'; sc.fillRect(wx2,258,10,20);
+  sc.fillStyle='#4488cc'; sc.fillRect(wx2-1,264,12,14);
+  sc.font='10px serif'; sc.fillText('😊',wx2-2,256);
+  // kite
+  const kx=400+Math.sin(t/1500)*60, ky=80+Math.sin(t/1200)*30;
+  sc.strokeStyle='#e84040'; sc.lineWidth=2;
+  sc.beginPath(); sc.moveTo(kx,ky); sc.lineTo(kx+50,ky+30); sc.lineTo(kx,ky+60); sc.lineTo(kx-50,ky+30); sc.closePath(); sc.stroke();
+  sc.fillStyle='#e84040'; sc.fill();
+  sc.strokeStyle='#aaa'; sc.lineWidth=1;
+  sc.beginPath(); sc.moveTo(kx,ky+60); sc.lineTo(450,260); sc.stroke();
+  // BUMDes sign
+  sc.fillStyle='#5a2d00'; sc.fillRect(500,228,16,50);
+  sc.fillStyle='#ffd700'; sc.fillRect(490,220,100,22);
+  sc.fillStyle='#000'; sc.font='5px "Press Start 2P",monospace';
+  sc.fillText('BUMDes KUTANG',493,234);
+  // star sparkles
+  [[340,90],[560,110],[200,100]].forEach(([x,y])=>{
+    sc.fillStyle=`rgba(255,220,50,${0.4+Math.sin(t/400+x)*0.6})`;
+    sc.fillRect(x,y,3,3); sc.fillRect(x+1,y-2,1,6); sc.fillRect(x-2,y+1,6,1);
+  });
+}
+
+function drawSceneMission(sc, t) {
+  // Dawn scene - new day, hopeful green
+  const dawn = 0.7+Math.sin(t/2000)*0.3;
+  // horizon glow
+  const hg=sc.createLinearGradient(0,0,0,300);
+  hg.addColorStop(0,'rgba(10,40,20,0)');
+  hg.addColorStop(1,`rgba(80,200,80,${dawn*0.15})`);
+  sc.fillStyle=hg; sc.fillRect(0,0,800,420);
+  // beach
+  sc.fillStyle='#c89028'; sc.fillRect(0,250,800,170);
+  sc.fillStyle='#dda038'; sc.fillRect(0,247,800,8);
+  // palms with morning light
+  drawStoryPalm(sc,60,275,t);
+  drawStoryPalm(sc,700,270,t);
+  // rising sun peeking
+  const sunY=180-Math.min(40,(t%999999)/500);
+  const sunG=sc.createRadialGradient(400,sunY,0,400,sunY,100);
+  sunG.addColorStop(0,`rgba(255,240,100,${dawn})`);
+  sunG.addColorStop(0.4,`rgba(255,180,30,${dawn*0.5})`);
+  sunG.addColorStop(1,'rgba(0,0,0,0)');
+  sc.fillStyle=sunG; sc.fillRect(280,sunY-100,240,200);
+  sc.fillStyle=`rgba(255,250,150,${dawn})`; sc.beginPath(); sc.arc(400,sunY,24,0,Math.PI*2); sc.fill();
+  // Player character large
+  const px=380, py=235;
+  const bob=Math.sin(t/600)*3;
+  sc.fillStyle='#1a8fc1'; sc.fillRect(px-6,py+8+bob,18,16);
+  sc.fillStyle='#ffcc99'; sc.fillRect(px-4,py+bob,14,11);
+  sc.fillStyle='#3a1a00'; sc.fillRect(px-4,py+bob,14,4);
+  sc.fillStyle='#333'; sc.fillRect(px+1,py+4+bob,3,3); sc.fillRect(px+7,py+4+bob,3,3);
+  sc.fillStyle='#ffd700'; sc.fillRect(px-5,py-4+bob,16,5); sc.fillRect(px-1,py-9+bob,10,6);
+  sc.fillStyle='#fff'; sc.font='5px "Press Start 2P",monospace'; sc.fillText('MGR',px-4,py+6+bob);
+  sc.fillStyle='#2266aa'; sc.fillRect(px-6,py+24+bob,6,8); sc.fillRect(px+5,py+24+bob,6,8);
+  // punch-fist
+  sc.font='20px serif'; sc.fillText('💪',px+14,py+14+bob);
+  // checkmark board
+  sc.fillStyle='#5a2d00'; sc.fillRect(580,220,8,60);
+  sc.fillStyle='#fff8e0'; sc.fillRect(590,215,100,70);
+  sc.fillStyle='#333'; sc.font='5px "Press Start 2P",monospace';
+  sc.fillText('MISI HARI 1',593,228);
+  sc.fillStyle='#3db54a';
+  ['✓ Bangun Fasilitas','✓ Layani Tamu','✓ Jaga Kebersihan'].forEach((txt,i)=>{
+    sc.fillText(txt,593,240+i*14);
+  });
+  // energy sparkles
+  [[340,200],[460,195],[400,175]].forEach(([x,y],i)=>{
+    const a=0.5+Math.sin(t/300+i*2)*0.5;
+    sc.fillStyle=`rgba(80,255,100,${a})`;
+    sc.fillRect(x,y,3,3); sc.fillRect(x+1,y-2,1,6); sc.fillRect(x-2,y+1,6,1);
+  });
+}
+
+// ── Hook startGame to show story first ──
+function startGame() {
+  document.getElementById('titleScreen').classList.remove('active');
+  openStory();
+}
+
+function actuallyStartGame(){
   document.getElementById('gameScreen').classList.add('active');
   running = true;
   money = 2000;
@@ -817,15 +1971,164 @@ function startGame(){
   objects = [];
   visitors = [];
   trash = [];
+  totalVisitorsServed = 0;
+  dailyRevenue = [];
   updateHUD();
+  updateTargetBar();
+  updateDayDots();
   lastTime = performance.now();
   requestAnimationFrame(gameLoop);
+  // Tampilkan tutorial setelah game dimulai
+  setTimeout(openTutorial, 400);
 }
 
 function restartGame(){
   document.getElementById('endScreen').classList.remove('active');
   document.getElementById('titleScreen').classList.add('active');
 }
+
+// ════════════════════════════════════════════
+//  TUTORIAL SYSTEM
+// ════════════════════════════════════════════
+const TUT_STEPS = [
+  {
+    label: 'LANGKAH 1 / 6',
+    mascot: '👷',
+    text: 'Selamat datang, Manager!\nIni adalah area PANTAI KUTANG.\nTujuanmu: kembangkan pantai\nini selama 7 hari!',
+    target: null,          // no spotlight
+    arrow: 'arrow-bottom',
+    bPos: { left:'50%', top:'50%', transform:'translate(-50%,-50%)' }
+  },
+  {
+    label: 'LANGKAH 2 / 6',
+    mascot: '💰',
+    text: 'HUD di atas menampilkan:\n💰 Uang · ⭐ Poin · 😊 Reputasi\n⏰ Waktu tersisa hari ini.\nJaga reputasi agar tetap tinggi!',
+    target: 'hud',
+    arrow: 'arrow-top',
+    bPos: { left:'50%', top:'70px', transform:'translateX(-50%)' }
+  },
+  {
+    label: 'LANGKAH 3 / 6',
+    mascot: '🏗️',
+    text: 'PANEL BANGUN ada di bawah.\nPilih fasilitas (Payung, Warung,\nGazebo, dll) lalu KLIK area\npasir untuk membangunnya!',
+    target: 'shopPanel',
+    arrow: 'arrow-bottom',
+    bPos: { left:'50%', bottom:'90px', transform:'translateX(-50%)' }
+  },
+  {
+    label: 'LANGKAH 4 / 6',
+    mascot: '🎯',
+    text: 'TARGET harian ada di kanan.\nCapai target pendapatan tiap\nhari untuk menang! Makin\nbanyak fasilitas = makin ramai!',
+    target: 'targetBar',
+    arrow: 'arrow-right',
+    bPos: { right:'170px', top:'55px' }
+  },
+  {
+    label: 'LANGKAH 5 / 6',
+    mascot: '🗑️',
+    text: 'Sampah akan muncul di pantai.\nKlik tombol 🗑️ BERSIHKAN\natau dekati sampah dengan\npemain untuk membersihkan!',
+    target: null,
+    arrow: 'arrow-bottom',
+    bPos: { left:'50%', top:'50%', transform:'translate(-50%,-50%)' }
+  },
+  {
+    label: 'LANGKAH 6 / 6',
+    mascot: '🎁',
+    text: 'Kumpulkan Poin Pesona ⭐\nlalu tukarkan di 🎁 O2O Tukar\nuntuk hadiah NYATA di Pantai\nKutang, Lamongan! Selamat main!',
+    target: null,
+    arrow: 'arrow-bottom',
+    bPos: { left:'50%', top:'50%', transform:'translate(-50%,-50%)' }
+  },
+];
+
+let tutStep = 0;
+
+function openTutorial() {
+  tutStep = 0;
+  const ov = document.getElementById('tutorialOverlay');
+  ov.classList.add('visible');
+  buildTutDots();
+  renderTutStep();
+}
+
+function buildTutDots() {
+  const c = document.getElementById('tutDots');
+  c.innerHTML = '';
+  TUT_STEPS.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'tut-dot';
+    d.id = 'tdot' + i;
+    c.appendChild(d);
+  });
+}
+
+function renderTutStep() {
+  const s = TUT_STEPS[tutStep];
+  // label
+  document.getElementById('tutStepLabel').textContent = s.label;
+  // mascot + text
+  const bubble = document.getElementById('tutorialBubble');
+  bubble.querySelector('.tut-mascot').textContent = s.mascot;
+  document.getElementById('tutText').innerHTML = s.text.replace(/\n/g,'<br>');
+  // arrow direction
+  bubble.className = 'btn-tut-next'; // clear
+  bubble.className = 'tut-text';     // clear
+  bubble.id = 'tutorialBubble';
+  bubble.classList.add(s.arrow);
+
+  // position bubble
+  const bp = s.bPos;
+  bubble.style.left   = bp.left   || 'auto';
+  bubble.style.top    = bp.top    || 'auto';
+  bubble.style.right  = bp.right  || 'auto';
+  bubble.style.bottom = bp.bottom || 'auto';
+  bubble.style.transform = bp.transform || 'none';
+
+  // spotlight
+  const spot = document.getElementById('tutorialSpotlight');
+  if (s.target) {
+    const el = document.getElementById(s.target);
+    const gs = document.getElementById('gameScreen');
+    const gsRect = gs.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
+    const pad = 6;
+    spot.style.display = 'block';
+    spot.style.left   = (rect.left - gsRect.left - pad) + 'px';
+    spot.style.top    = (rect.top  - gsRect.top  - pad) + 'px';
+    spot.style.width  = (rect.width  + pad*2) + 'px';
+    spot.style.height = (rect.height + pad*2) + 'px';
+  } else {
+    spot.style.display = 'none';
+  }
+
+  // dots
+  TUT_STEPS.forEach((_,i) => {
+    const d = document.getElementById('tdot' + i);
+    if (!d) return;
+    d.className = 'tut-dot';
+    if (i < tutStep)      d.classList.add('done');
+    else if (i===tutStep) d.classList.add('active');
+  });
+
+  // last step button label
+  document.getElementById('btnTutNext').textContent =
+    tutStep === TUT_STEPS.length - 1 ? 'MAIN! 🏖️' : 'LANJUT ▶';
+}
+
+function nextTutStep() {
+  if (tutStep < TUT_STEPS.length - 1) {
+    tutStep++;
+    renderTutStep();
+  } else {
+    closeTutorial();
+  }
+}
+
+function closeTutorial() {
+  document.getElementById('tutorialOverlay').classList.remove('visible');
+  document.getElementById('tutorialSpotlight').style.display = 'none';
+}
+
 </script>
 </body>
 </html>
